@@ -1,80 +1,319 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!DOCTYPE html>
+<html lang="id">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Al-Hayya Hijab</title>
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="https://fonts.bunny.net/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-primary': '#81C784',
+                        'brand-secondary': '#A5D6A7',
+                        'brand-dark': '#2D5A27',
+                        'soft-mint': '#F1F8E9',
+                        'soft-bg': '#F8FBF8',
+                    },
+                    fontFamily: {
+                        'sans': ['Poppins', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F8FBF8;
+            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #81C784;
+            border-radius: 10px;
+        }
+
+        .sidebar-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .active-menu {
+            background: rgba(129, 199, 132, 0.1);
+            color: #2D5A27 !important;
+            border-right: 4px solid #81C784;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar-closed {
+                transform: translateX(-100%);
+            }
+
+            .main-content-expanded {
+                margin-left: 0 !important;
+            }
+        }
+
+        table.dataTable thead th {
+            background-color: #f8fafc;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 42px;
+            border-radius: 0.75rem;
+            border: 1px solid #d1d5db;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .select2-selection__rendered {
+            padding-left: 0 !important;
+        }
+
+        .select2-selection__arrow {
+            height: 100%;
+        }
+
+        .select2-container--default .select2-selection--single:focus {
+            border-color: #81C784;
+            outline: none;
+        }
+    </style>
 </head>
-<body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
+<body class="font-sans antialiased">
 
-                    </ul>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[55] hidden lg:hidden"></div>
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
+    <aside id="sidebar"
+        class="w-64 bg-white border-r border-gray-100 flex flex-col fixed h-full z-[60] sidebar-transition sidebar-closed lg:transform-none">
+        <div class="p-8 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-md shadow-brand-primary/20">
+                    <i class="fa-solid fa-wand-magic-sparkles text-white"></i>
                 </div>
+                <span class="text-brand-dark font-extrabold text-xl tracking-tight">AL-HYA</span>
             </div>
+            <button id="closeSidebar" class="lg:hidden text-gray-400 hover:text-red-500">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-1 overflow-y-auto pb-10">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-4">Utama</p>
+            <a href="#"
+                class="active-menu flex items-center gap-4 px-4 py-3.5 rounded-xl font-bold text-gray-500 hover:bg-gray-50 transition-all">
+                <i class="fa-solid fa-chart-simple w-5"></i> Dashboard
+            </a>
+
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-6">Katalog</p>
+            <a href="#"
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                <i class="fa-solid fa-box w-5"></i> Produk
+            </a>
+            <a href="#"
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                <i class="fa-solid fa-tags w-5"></i> Kategori & Brand
+            </a>
+
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-6">Penjualan</p>
+            <a href="#"
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                <i class="fa-solid fa-cart-shopping w-5"></i> Pesanan
+                <span class="ml-auto bg-orange-100 text-orange-600 text-[10px] px-2 py-0.5 rounded-lg">8</span>
+            </a>
+            <a href="#"
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                <i class="fa-solid fa-ticket w-5"></i> Kupon Promo
+            </a>
+
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-6">Pengguna</p>
+            <a href="#"
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                <i class="fa-solid fa-user-group w-5"></i> Pelanggan
+            </a>
+            <a href="#"
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                <i class="fa-solid fa-message w-5"></i> Ulasan
+            </a>
         </nav>
 
-        <main class="py-4">
-            @yield('content')
-        </main>
-    </div>
+        <div class="p-4 border-t border-gray-50 mt-auto">
+            <button
+                class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-red-500 hover:bg-red-50 font-bold transition-all">
+                <i class="fa-solid fa-power-off w-5"></i> Keluar
+            </button>
+        </div>
+    </aside>
+
+    <main id="mainContent" class="lg:ml-64 p-4 md:p-8 sidebar-transition">
+
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex items-center gap-4">
+                <button id="mobileMenuBtn"
+                    class="lg:hidden w-12 h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center text-gray-500">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+                <div class="hidden md:block">
+                    <h1 class="text-xl md:text-2xl font-extrabold text-brand-dark tracking-tight">Overview</h1>
+                    <p class="text-gray-400 text-sm font-medium">Monitoring performa toko Al-Hayya.</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="relative group hidden sm:block">
+                    <button
+                        class="w-12 h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center text-gray-400 hover:text-brand-primary transition-all">
+                        <i class="fa-regular fa-bell"></i>
+                        <span
+                            class="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                </div>
+
+                <div class="relative">
+                    <button id="userDropdownBtn"
+                        class="flex items-center gap-3 bg-white p-1.5 pr-4 border border-gray-100 rounded-2xl shadow-sm hover:border-brand-primary transition-all">
+                        <img src="https://ui-avatars.com/api/?name=Haikal&background=81C784&color=fff"
+                            class="w-9 h-9 rounded-xl shadow-sm" alt="Admin">
+                        <div class="text-left hidden xs:block">
+                            <p class="text-[12px] font-extrabold text-brand-dark leading-none mb-1">Haikal</p>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Admin Utama</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-[10px] text-gray-300 ml-1"></i>
+                    </button>
+
+                    <div id="userDropdown"
+                        class="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-gray-50 p-2 hidden z-50">
+                        <a href="#"
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-gray-600 hover:bg-soft-mint transition-all">
+                            <i class="fa-regular fa-user"></i> Profil
+                        </a>
+                        <a href="#"
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-gray-600 hover:bg-soft-mint transition-all">
+                            <i class="fa-solid fa-gear"></i> Pengaturan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @yield('content')
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const sidebar = $('#sidebar');
+            const overlay = $('#sidebarOverlay');
+            const mainContent = $('#mainContent');
+
+            $('#mobileMenuBtn').click(function () {
+                sidebar.removeClass('sidebar-closed').addClass('translate-x-0');
+                overlay.fadeIn(300).removeClass('hidden');
+            });
+
+            $('#closeSidebar, #sidebarOverlay').click(function () {
+                sidebar.addClass('sidebar-closed').removeClass('translate-x-0');
+                overlay.fadeOut(300);
+            });
+
+            $('#userDropdownBtn').click(function (e) {
+                e.stopPropagation();
+                $('#userDropdown').toggleClass('hidden animate-fade-in');
+            });
+
+            $(document).click(function () {
+                $('#userDropdown').addClass('hidden');
+            });
+
+            $('.sidebar-item').click(function () {
+                $('.sidebar-item').removeClass('active-menu');
+                $(this).addClass('active-menu');
+            });
+
+            $(window).resize(function () {
+                if ($(window).width() >= 1024) {
+                    sidebar.removeClass('sidebar-closed translate-x-0');
+                    overlay.hide();
+                } else {
+                    sidebar.addClass('sidebar-closed');
+                }
+            });
+        });
+    </script>
+
+    @stack('scripts')
+
+    @if ($errors->any())
+        <script>
+            let errorMessages = '';
+            @foreach ($errors->all() as $error)
+                errorMessages += "{{ $error }}\n";
+            @endforeach
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: errorMessages,
+            });
+        </script>
+    @endif
+
+    @if (session('success') || session('error'))
+        <script>
+            $(document).ready(function () {
+                var successMessage = "{{ session('success') }}";
+                var errorMessage = "{{ session('error') }}";
+
+                if (successMessage) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: successMessage,
+                    });
+                }
+
+                if (errorMessage) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage,
+                    });
+                }
+            });
+        </script>
+    @endif
 </body>
+
 </html>

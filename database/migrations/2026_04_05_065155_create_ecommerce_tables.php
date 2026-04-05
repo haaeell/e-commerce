@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('phone', 20)->nullable();
-            $table->enum('role', ['customer', 'admin', 'seller'])->default('customer');
+            $table->enum('role', ['customer', 'admin'])->default('customer');
             $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
@@ -67,6 +67,24 @@ return new class extends Migration
             $table->string('logo')->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->timestamps();
+        });
+
+
+
+        Schema::create('coupons', function (Blueprint $table) {
+            $table->id();
+            $table->string('code')->unique();
+            $table->string('name');
+            $table->enum('type', ['percent', 'fixed'])->default('fixed');
+            $table->decimal('value', 15, 2);
+            $table->decimal('min_purchase', 15, 2)->default(0);
+            $table->decimal('max_discount', 15, 2)->nullable();
+            $table->unsignedInteger('quota')->nullable();   // null = unlimited
+            $table->unsignedInteger('used_count')->default(0);
+            $table->boolean('is_active')->default(true);
+            $table->timestamp('started_at')->nullable();
+            $table->timestamp('expired_at')->nullable();
             $table->timestamps();
         });
 
@@ -269,22 +287,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['user_id', 'product_id']);
-        });
-
-        Schema::create('coupons', function (Blueprint $table) {
-            $table->id();
-            $table->string('code')->unique();
-            $table->string('name');
-            $table->enum('type', ['percent', 'fixed'])->default('fixed');
-            $table->decimal('value', 15, 2);
-            $table->decimal('min_purchase', 15, 2)->default(0);
-            $table->decimal('max_discount', 15, 2)->nullable();
-            $table->unsignedInteger('quota')->nullable();   // null = unlimited
-            $table->unsignedInteger('used_count')->default(0);
-            $table->boolean('is_active')->default(true);
-            $table->timestamp('started_at')->nullable();
-            $table->timestamp('expired_at')->nullable();
-            $table->timestamps();
         });
 
         Schema::create('coupon_usages', function (Blueprint $table) {
