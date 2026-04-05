@@ -3,167 +3,167 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Login - Barokah Computer</title>
+    <title>Admin Login - VIBE WEAR</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://fonts.bunny.net/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         body {
-            background-color: #f0f4ff;
-            /* Motif Topography Soft */
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 86c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm66-3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-46-45c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm58 41c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM32 5c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm54 23c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM16 38c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm56 0c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM9 55c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm64 48c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM82 7c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-1 88c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm20-32c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm0-18c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM2 95c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm98-4c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM48 7c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-31 9c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm24 38c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-8 25c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm43-20c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-5-48c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm31 2c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-21 4c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM4 39c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm31 15c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm27 34c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm29-8c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM28 63c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm7-30c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm33-7c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM71 57c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-35 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm2-58c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm14 10c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-7 31c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-28 37c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm28-17c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm19-6c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-11 44c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-12-14c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm30-6c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-26-20c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm31 2c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-33-5c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm35-5c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM9 19c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm81 42c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM59 91c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-22-1c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm58-45c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM6 18c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm88 45c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM8 73c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm61 5c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM4 2c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm43 78c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm29 18c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm28-14c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-49-1c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-43-5c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM28 10c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm75 51c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM59 21c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm33 31c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM48 92c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM21 24c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm0 35c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm99-13c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-79-7c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-1-18c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1y' fill='%236366f1' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .bg-pattern {
+            background-color: #f8f9fa;
+            background-image: radial-gradient(#e5e7eb 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
         }
     </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center font-['Poppins'] p-4">
+<body class="min-h-screen flex items-center justify-center bg-pattern p-6">
 
-    <div
-        class="w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-indigo-100 overflow-hidden flex flex-col md:flex-row min-h-[550px]">
+    <div class="w-full max-w-[1000px] flex flex-col md:flex-row bg-white rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100">
+        
+        <div class="w-full md:w-1/2 relative bg-black p-12 flex flex-col justify-between overflow-hidden">
+            <div class="absolute -top-20 -left-20 w-64 h-64 bg-zinc-800 rounded-full opacity-50 blur-3xl"></div>
+            <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-zinc-700 rounded-full opacity-30 blur-3xl"></div>
 
-        <div
-            class="w-full md:w-1/2 bg-gradient-to-br from-indigo-700 to-blue-800 p-10 flex flex-col justify-center items-center text-center text-white">
-            <div class="bg-white/20 p-6 rounded-3xl backdrop-blur-md mb-6 ring-1 ring-white/30 shadow-xl">
-                <i class="fa-solid fa-laptop text-6xl text-white"></i>
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-8">
+                    <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-shirt text-black text-xl"></i>
+                    </div>
+                    <span class="text-white font-bold text-2xl tracking-tighter uppercase">Vibe Wear</span>
+                </div>
+                
+                <h2 class="text-4xl font-light text-white leading-tight">
+                    Manage your <br>
+                    <span class="font-bold">Apparel Empire.</span>
+                </h2>
             </div>
 
-            <h1 class="text-3xl font-bold tracking-tight mb-2">
-                Barokah Computer
-            </h1>
-
-            <p class="text-indigo-100 text-sm max-w-[280px] leading-relaxed">
-                @php
-                    $description = App\Models\Setting::where('key', 'deskripsi')->first();
-                   @endphp
-                {{ $description->value }}
-            </p>
-
-            <div class="mt-12 flex gap-3 text-[10px] uppercase font-bold tracking-widest">
-                <div class="bg-white/10 px-4 py-2 rounded-full border border-white/20">Original</div>
-                <div class="bg-white/10 px-4 py-2 rounded-full border border-white/20">Bergaransi</div>
+            <div class="relative z-10">
+                <p class="text-zinc-400 text-sm max-w-xs mb-6">
+                    Panel administrasi khusus untuk manajemen stok kaos, pesanan pelanggan, dan analisis tren penjualan.
+                </p>
+                <div class="flex items-center gap-4 text-white/60 text-xs">
+                    <span>v2.4.0</span>
+                    <span class="w-1 h-1 bg-white/30 rounded-full"></span>
+                    <span>Secure Encryption</span>
+                </div>
             </div>
         </div>
 
-        <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-800">Login Admin</h2>
-                <p class="text-gray-500 text-sm mt-1">Gunakan akun terdaftar Anda untuk akses panel.</p>
+        <div class="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-white">
+            <div class="mb-10">
+                <h1 class="text-3xl font-bold text-zinc-900 mb-2">Selamat Datang</h1>
+                <p class="text-zinc-500">Masukkan kredensial Anda untuk masuk ke dashboard.</p>
             </div>
 
-            {{-- Alert Error Container --}}
-            @if ($errors->any() || session('error'))
-                <div class="mb-6 overflow-hidden rounded-xl border border-red-200 bg-white shadow-sm flex" role="alert">
-                    {{-- Accent Bar --}}
-                    <div class="w-1.5 bg-red-500"></div>
-
-                    <div class="p-4 flex flex-grow items-start">
-                        {{-- Icon Section --}}
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-exclamation-circle text-red-500 text-xl"></i>
-                        </div>
-
-                        {{-- Content Section --}}
-                        <div class="ml-4 flex-grow">
-                            <h3 class="text-sm font-semibold text-red-800 uppercase tracking-wide">
-                                Terjadi Kesalahan
-                            </h3>
-
-                            <div class="mt-1 text-sm text-red-700 leading-relaxed">
-                                @if ($errors->any())
-                                    <ul class="list-disc list-inside space-y-1">
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <p>{{ session('error') }}</p>
-                                @endif
-                            </div>
-                        </div>
-
-                        <button type="button" onclick="this.parentElement.parentElement.remove()"
-                            class="ml-auto text-red-400 hover:text-red-600 transition-colors">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-            @endif
-
-            <form method="POST" action="{{ route('login') }}" class="space-y-5">
-                @csrf
-
-                <div>
-                    <label class="text-xs font-bold uppercase tracking-wider text-gray-600 ml-1">Email Address</label>
-                    <div class="relative mt-1">
-                        <span class="absolute inset-y-0 left-4 flex items-center text-indigo-500">
-                            <i class="fa-regular fa-envelope"></i>
-                        </span>
-                        <input type="email" name="email" value="{{ old('email') }}" required
-                            class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition outline-none @error('email') border-red-400 @enderror"
-                            placeholder="nama@email.com">
+            <form id="loginForm" class="space-y-6">
+                <div class="group">
+                    <label class="block text-sm font-semibold text-zinc-700 mb-2 transition-colors group-focus-within:text-black">
+                        Email Office
+                    </label>
+                    <div class="relative">
+                        <input type="email" required
+                            class="w-full px-0 py-3 bg-transparent border-b-2 border-zinc-200 focus:border-black transition-all outline-none text-zinc-900 placeholder:text-zinc-300"
+                            placeholder="admin@vibewear.com">
                     </div>
                 </div>
 
-                <div>
-                    <label class="text-xs font-bold uppercase tracking-wider text-gray-600 ml-1">Password</label>
-                    <div class="relative mt-1">
-                        <span class="absolute inset-y-0 left-4 flex items-center text-indigo-500">
-                            <i class="fa-solid fa-lock"></i>
-                        </span>
-                        <input type="password" id="password" name="password" required
-                            class="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition outline-none @error('password') border-red-400 @enderror"
+                <div class="group">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-sm font-semibold text-zinc-700 transition-colors group-focus-within:text-black">
+                            Password
+                        </label>
+                        <a href="#" class="text-xs font-medium text-zinc-400 hover:text-black transition">Lupa password?</a>
+                    </div>
+                    <div class="relative">
+                        <input type="password" id="password" required
+                            class="w-full px-0 py-3 bg-transparent border-b-2 border-zinc-200 focus:border-black transition-all outline-none text-zinc-900 placeholder:text-zinc-300"
                             placeholder="••••••••">
-
-                        <button type="button" id="togglePassword"
-                            class="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-indigo-600 transition">
+                        
+                        <button type="button" id="togglePassword" class="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black">
                             <i class="fa-regular fa-eye"></i>
                         </button>
                     </div>
                 </div>
 
+                <div class="flex items-center gap-3 py-2">
+                    <input type="checkbox" id="remember" class="w-4 h-4 rounded border-zinc-300 text-black focus:ring-black cursor-pointer">
+                    <label for="remember" class="text-sm text-zinc-600 cursor-pointer select-none">Ingat perangkat ini</label>
+                </div>
 
                 <button type="submit" id="loginBtn"
-                    class="w-full mt-2 py-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                    <span id="btnText">Masuk ke Dashboard</span>
-                    <svg id="btnLoader" class="hidden w-5 h-5 animate-spin text-white"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                        </circle>
+                    class="w-full py-4 bg-black hover:bg-zinc-800 text-white font-semibold rounded-2xl transition-all active:scale-[0.99] flex items-center justify-center gap-3 shadow-lg shadow-zinc-200">
+                    <span id="btnText">Masuk Sekarang</span>
+                    <i id="btnIcon" class="fa-solid fa-arrow-right text-sm"></i>
+                    
+                    <svg id="btnLoader" class="hidden w-5 h-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                     </svg>
                 </button>
             </form>
 
-            <p class="text-center text-gray-400 text-xs mt-8">
-                &copy; 2026 Barokah Computer.
-            </p>
+            <div class="mt-12 pt-8 border-t border-zinc-100">
+                <p class="text-center text-zinc-400 text-xs">
+                    &copy; 2026 <strong>VIBE WEAR</strong>. All rights reserved. <br>
+                    Internal Admin System.
+                </p>
+            </div>
         </div>
     </div>
 
     <script>
-        const form = document.querySelector("form");
+        const form = document.getElementById("loginForm");
         const btn = document.getElementById("loginBtn");
         const btnText = document.getElementById("btnText");
+        const btnIcon = document.getElementById("btnIcon");
         const btnLoader = document.getElementById("btnLoader");
         const passwordInput = document.getElementById("password");
         const togglePassword = document.getElementById("togglePassword");
-        const toggleIcon = togglePassword.querySelector("i");
 
+        // Toggle Password Visibility
         togglePassword.addEventListener("click", () => {
             const isPassword = passwordInput.type === "password";
             passwordInput.type = isPassword ? "text" : "password";
-            toggleIcon.classList.toggle("fa-eye");
-            toggleIcon.classList.toggle("fa-eye-slash");
+            togglePassword.innerHTML = isPassword ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
         });
 
-        form.addEventListener("submit", function () {
+        // Form Submission Simulation
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            
+            // UI Feedback
             btn.disabled = true;
-            btn.classList.add("opacity-80");
-            btnText.textContent = "Mengautentikasi...";
+            btnText.textContent = "Memverifikasi...";
+            btnIcon.classList.add("hidden");
             btnLoader.classList.remove("hidden");
+            btn.classList.replace("bg-black", "bg-zinc-700");
+
+            // Simulasi Delay
+            setTimeout(() => {
+                alert("Berhasil masuk ke Dashboard Vibe Wear!");
+                
+                // Reset UI
+                btn.disabled = false;
+                btnText.textContent = "Masuk Sekarang";
+                btnIcon.classList.remove("hidden");
+                btnLoader.classList.add("hidden");
+                btn.classList.replace("bg-zinc-700", "bg-black");
+            }, 2000);
         });
     </script>
 
