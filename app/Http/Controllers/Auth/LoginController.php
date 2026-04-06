@@ -25,13 +25,17 @@ class LoginController extends Controller
         $this->validateLogin($request);
 
         if ($this->attemptLogin($request)) {
+            $user = auth()->user();
+
+            $redirectPath = $user->role === 'admin' ? '/home' : '/';
+
             if ($request->expectsJson()) {
                 return response()->json([
                     'status' => 'success',
-                    'redirect' => $this->redirectPath()
+                    'redirect' => $redirectPath
                 ]);
             }
-            return $this->sendLoginResponse($request);
+            return redirect($redirectPath);
         }
 
         return $this->sendFailedLoginResponse($request);

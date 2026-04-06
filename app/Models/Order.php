@@ -46,4 +46,49 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasManyThrough(
+            Review::class,
+            OrderItem::class,
+            'order_id',
+            'order_item_id',
+            'id',
+            'id'
+        );
+    }
+
+    public function scopeByStatus($query, $status)
+    {
+        return $query->where('status', $status);
+    }
+
+    public static function generateOrderNumber(): string
+    {
+        do {
+            $number = 'ORD-' . now()->format('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
+        } while (static::where('order_number', $number)->exists());
+
+        return $number;
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return match ($this->status) {
+            'pending'    => 'Pending',
+            'confirmed'  => 'Dikonfirmasi',
+            'processing' => 'Diproses',
+            'shipped'    => 'Dikirim',
+            'delivered'  => 'Terkirim',
+            'cancelled'  => 'Dibatalkan',
+            'refunded'   => 'Refund',
+            default      => ucfirst($this->status),
+        };
+    }
 }

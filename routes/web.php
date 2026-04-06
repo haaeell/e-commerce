@@ -1,19 +1,26 @@
 <?php
 
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [LandingPageController::class, 'index']);
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/collections', [LandingPageController::class, 'collections'])->name('collections.index');
+Route::get('/collections/{slug}', [LandingPageController::class, 'show'])->name('collections.show');
 
 Route::middleware(['auth'])->group(function () {
 
@@ -41,6 +48,25 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{id}', 'destroy');
     });
 
+    Route::prefix('customers')->controller(CustomerController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'destroy');
+    });
+
+    Route::prefix('reviews')->controller(ReviewController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::patch('/{id}/toggle-verify', 'toggleVerify');
+        Route::delete('/{id}', 'destroy');
+    });
+
+    Route::prefix('profile')->controller(ProfileController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::put('/update', 'updateProfile')->name('profile.update');
+        Route::put('/password', 'updatePassword')->name('profile.password');
+    });
+
     // Products
     Route::prefix('products')->controller(ProductController::class)->group(function () {
         Route::get('/', 'index');
@@ -57,5 +83,24 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/{id}/variants', 'storeVariant');
         Route::put('/{id}/variants/{variantId}', 'updateVariant');
         Route::delete('/{id}/variants/{variantId}', 'destroyVariant');
+    });
+
+    Route::prefix('orders')->controller(OrderController::class)->group(function () {
+
+        Route::get('/',        'index')->name('orders.index');
+        Route::get('/{id}',    'show')->name('orders.show');
+        Route::get('/{id}/api', 'showApi')->name('orders.api');
+        Route::patch('/{id}/status', 'updateStatus')->name('orders.status');
+        Route::patch('/{id}/resi', 'updateResi')->name('orders.resi');
+    });
+
+    Route::post('/reviews/{id}/verify', [OrderController::class, 'verify'])->name('reviews.verify');
+
+    // Cart
+    Route::prefix('cart')->controller(CartController::class)->group(function () {
+        Route::get('/',         'index')->name('cart.index');
+        Route::post('/add',     'store')->name('cart.store');
+        Route::patch('/update/{id}', 'update')->name('cart.update');
+        Route::delete('/delete/{id}', 'destroy')->name('cart.destroy');
     });
 });

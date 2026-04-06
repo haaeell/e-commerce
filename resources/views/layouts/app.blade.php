@@ -150,7 +150,7 @@
 
 
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-6">Penjualan</p>
-            <a href="#"
+            <a href="/orders"
                 class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
                 <i class="fa-solid fa-cart-shopping w-5"></i> Pesanan
                 <span class="ml-auto bg-orange-100 text-orange-600 text-[10px] px-2 py-0.5 rounded-lg">8</span>
@@ -161,18 +161,22 @@
             </a>
 
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-6">Pengguna</p>
-            <a href="#"
+            <a href="/customers"
                 class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
                 <i class="fa-solid fa-user-group w-5"></i> Pelanggan
             </a>
-            <a href="#"
+            <a href="/reviews"
                 class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
                 <i class="fa-solid fa-message w-5"></i> Ulasan
             </a>
         </nav>
 
         <div class="p-4 border-t border-gray-50 mt-auto">
-            <button
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                @csrf
+            </form>
+
+            <button type="button" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                 class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-red-500 hover:bg-red-50 font-bold transition-all">
                 <i class="fa-solid fa-power-off w-5"></i> Keluar
             </button>
@@ -193,20 +197,85 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <div class="relative group hidden sm:block">
-                    <button
-                        class="w-12 h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center text-gray-400 hover:text-brand-primary transition-all">
+                <div class="relative">
+                    <button id="notifDropdownBtn"
+                        class="w-12 h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center text-gray-400 hover:text-brand-primary transition-all relative">
                         <i class="fa-regular fa-bell"></i>
                         <span
-                            class="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                            class="absolute top-3 right-3 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
                     </button>
+
+                    <div id="notifDropdown"
+                        class="absolute right-0 mt-3 w-80 md:w-96 bg-white rounded-[2rem] shadow-2xl border border-gray-50 overflow-hidden hidden z-50">
+                        <div class="p-5 border-b border-gray-50 flex justify-between items-center bg-soft-bg/50">
+                            <h3 class="font-extrabold text-brand-dark text-sm">Notifikasi Baru</h3>
+                            <span
+                                class="text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2 py-1 rounded-lg">3
+                                Belum Dibaca</span>
+                        </div>
+
+                        <div class="max-h-[400px] overflow-y-auto">
+                            <a href="#"
+                                class="flex gap-4 p-4 hover:bg-soft-mint/30 transition-all border-b border-gray-50">
+                                <div
+                                    class="w-11 h-11 rounded-xl bg-orange-100 text-orange-600 flex-shrink-0 flex items-center justify-center">
+                                    <i class="fa-solid fa-cart-shopping text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] font-bold text-brand-dark leading-tight mb-1">Pesanan Baru
+                                        Masuk!</p>
+                                    <p class="text-[10px] text-gray-500 line-clamp-2">Pelanggan Siska Amelia telah
+                                        memesan "Pashmina Silk" senilai Rp 150.000.</p>
+                                    <p class="text-[9px] text-gray-400 mt-2 font-medium">2 menit yang lalu</p>
+                                </div>
+                            </a>
+
+                            <a href="#"
+                                class="flex gap-4 p-4 hover:bg-soft-mint/30 transition-all border-b border-gray-50">
+                                <div
+                                    class="w-11 h-11 rounded-xl bg-blue-100 text-blue-600 flex-shrink-0 flex items-center justify-center">
+                                    <i class="fa-solid fa-star text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] font-bold text-brand-dark leading-tight mb-1">Ulasan Bintang 5
+                                    </p>
+                                    <p class="text-[10px] text-gray-500 line-clamp-2">"Bahannya adem banget, suka!" -
+                                        Sarah di produk Bergo Instan.</p>
+                                    <p class="text-[9px] text-gray-400 mt-2 font-medium">1 jam yang lalu</p>
+                                </div>
+                            </a>
+
+                            <a href="#" class="flex gap-4 p-4 hover:bg-soft-mint/30 transition-all">
+                                <div
+                                    class="w-11 h-11 rounded-xl bg-red-100 text-red-600 flex-shrink-0 flex items-center justify-center">
+                                    <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] font-bold text-brand-dark leading-tight mb-1">Peringatan Stok
+                                    </p>
+                                    <p class="text-[10px] text-gray-500 line-clamp-2">Hijab Bella Square warna Khaki
+                                        sisa 2 pcs lagi!</p>
+                                    <p class="text-[9px] text-gray-400 mt-2 font-medium">5 jam yang lalu</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <a href="/notifications"
+                            class="block py-4 text-center text-[11px] font-bold text-brand-primary border-t border-gray-50 hover:bg-gray-50 tracking-wider uppercase">
+                            Lihat Semua Notifikasi
+                        </a>
+                    </div>
                 </div>
 
                 <div class="relative">
                     <button id="userDropdownBtn"
                         class="flex items-center gap-3 bg-white p-1.5 pr-4 border border-gray-100 rounded-2xl shadow-sm hover:border-brand-primary transition-all">
-                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}&background=81C784&color=fff"
-                            class="w-9 h-9 rounded-xl shadow-sm" alt="Admin">
+                        @if(auth()->user()->avatar)
+                            <img src="{{ asset('storage/' . auth()->user()->avatar) }}"
+                                class="w-9 h-9 rounded-xl shadow-sm">
+                        @else
+                            <i class="fa-solid fa-user-tie text-5xl text-brand-primary"></i>
+                        @endif
                         <div class="text-left hidden xs:block">
                             <p class="text-[12px] font-extrabold text-brand-dark leading-none mb-1">
                                 {{ Auth::user()->name }}
@@ -220,7 +289,7 @@
 
                     <div id="userDropdown"
                         class="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-gray-50 p-2 hidden z-50">
-                        <a href="#"
+                        <a href="/profile"
                             class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-gray-600 hover:bg-soft-mint transition-all">
                             <i class="fa-regular fa-user"></i> Profil
                         </a>
@@ -279,6 +348,20 @@
                 } else {
                     sidebar.addClass('sidebar-closed');
                 }
+            });
+
+            $('#notifDropdownBtn').click(function (e) {
+                e.stopPropagation();
+                $('#userDropdown').addClass('hidden');
+                $('#notifDropdown').toggleClass('hidden animate-fade-in');
+            });
+
+            $(document).click(function () {
+                $('#notifDropdown').addClass('hidden');
+            });
+
+            $('#notifDropdown').click(function (e) {
+                e.stopPropagation();
             });
         });
     </script>
