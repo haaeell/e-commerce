@@ -11,6 +11,8 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -62,6 +64,18 @@
         .animate-shimmer {
             animation: shimmer 2s infinite;
         }
+
+        .select2-container--default .select2-selection--single {
+            border-radius: 0.75rem;
+            border-color: #f3f4f6;
+            height: 46px;
+            display: flex;
+            align-items: center;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 44px;
+        }
     </style>
     @yield('styles')
 </head>
@@ -90,7 +104,14 @@
                 <a href="/cart" class="relative p-2 text-brand-dark hover:text-brand-primary transition-colors">
                     <i class="fa-solid fa-cart-shopping text-xl"></i>
                     <span
-                        class="absolute top-0 right-0 bg-brand-primary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center border-2 border-white shadow">0</span>
+                        class="absolute top-0 right-0 bg-brand-primary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center border-2 border-white shadow">
+                        @auth
+                                            {{ \App\Models\CartItem::whereHas('cart', function ($q) {
+                            $q->where('user_id', auth()->id()); })->count() }}
+                        @else
+                            0
+                        @endauth
+                    </span>
                 </a>
 
                 @auth
@@ -208,6 +229,9 @@
     <div class="h-28 md:hidden"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @yield('scripts')
 
     <script>

@@ -30,13 +30,30 @@
                                     <div>
                                         <p
                                             class="text-[10px] md:text-xs font-bold text-brand-primary uppercase tracking-widest mb-1">
-                                            {{ $item->product->category->name }}</p>
+                                            {{ $item->product->category->name }}
+                                        </p>
                                         <h3 class="font-bold text-brand-dark text-sm md:text-lg leading-tight mb-2">
-                                            {{ $item->product->name }}</h3>
+                                            {{ $item->product->name }}
+                                        </h3>
+
+                                        @if($item->variant)
+                                            <div class="flex flex-wrap gap-2 mb-2">
+                                                @foreach($item->variant->attributes as $attr)
+                                                    <span
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-600 border border-gray-200">
+                                                        {{ $attr->attribute_name }}: {{ $attr->attribute_value }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
+                                        @endif
                                     </div>
-                                    <button class="text-gray-300 hover:text-red-500 transition-colors p-2">
-                                        <i class="fa-solid fa-trash-can"></i>
-                                    </button>
+                                    <form action="{{ route('cart.destroy', $item->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-gray-300 hover:text-red-500 transition-colors p-2">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </form>
                                 </div>
 
                                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-2">
@@ -46,15 +63,17 @@
 
                                     <div
                                         class="flex items-center gap-1 bg-soft-mint rounded-xl p-1 w-fit border border-brand-primary/10">
-                                        <button
-                                            class="w-8 h-8 rounded-lg flex items-center justify-center text-brand-dark hover:bg-white transition-all">
+                                        <button type="button"
+                                            class="update-qty w-8 h-8 rounded-lg flex items-center justify-center text-brand-dark hover:bg-white transition-all"
+                                            data-id="{{ $item->id }}" data-action="minus">
                                             <i class="fa-solid fa-minus text-[10px]"></i>
                                         </button>
-                                        <input type="text" value="{{ $item->quantity }}"
+                                        <input type="text" value="{{ $item->qty }}"
                                             class="w-10 text-center bg-transparent font-bold text-sm text-brand-dark outline-none"
                                             readonly>
-                                        <button
-                                            class="w-8 h-8 rounded-lg flex items-center justify-center text-brand-dark hover:bg-white transition-all">
+                                        <button type="button"
+                                            class="update-qty w-8 h-8 rounded-lg flex items-center justify-center text-brand-dark hover:bg-white transition-all"
+                                            data-id="{{ $item->id }}" data-action="plus">
                                             <i class="fa-solid fa-plus text-[10px]"></i>
                                         </button>
                                     </div>
@@ -129,4 +148,33 @@
             </div>
         </div>
     </section>
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function () {
+            $('.update-qty').click(function () {
+                let btn = $(this);
+                let id = btn.data('id');
+                let action = btn.data('action');
+                let input = btn.siblings('input');
+                let currentQty = parseInt(input.val());
+                let newQty = action === 'plus' ? currentQty + 1 : currentQty - 1;
+
+                if (newQty < 1) return;
+
+                $.ajax({
+                    url: `/cart/update/${id}`,
+                    method: 'PATCH',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        quantity: newQty
+                    },
+                    success: function (response) {
+                        location.reload();
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

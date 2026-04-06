@@ -56,7 +56,7 @@ class LandingPageController extends Controller
 
     public function show($slug)
     {
-        $product = Product::with(['category', 'images'])->where('slug', $slug)->firstOrFail();
+        $product = Product::with(['variants.attributes', 'category', 'images'])->where('slug', $slug)->firstOrFail();
 
         $relatedProducts = Product::with(['category', 'images'])
             ->where('category_id', $product->category_id)

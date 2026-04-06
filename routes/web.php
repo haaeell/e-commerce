@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
@@ -13,6 +15,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\Mime\Address;
 
 Route::get('/', [LandingPageController::class, 'index']);
 
@@ -102,5 +105,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/add',     'store')->name('cart.store');
         Route::patch('/update/{id}', 'update')->name('cart.update');
         Route::delete('/delete/{id}', 'destroy')->name('cart.destroy');
+    });
+
+    // Checkout
+    Route::prefix('checkout')->controller(CheckoutController::class)->group(function () {
+        Route::get('/',         'index')->name('checkout.index');
+        Route::post('/set-address', [CheckoutController::class, 'setAddress'])->name('checkout.set-address');
+        Route::post('/check-ongkir', 'checkOngkir')->name('checkout.check-ongkir'); // Tambahkan ini
+    });
+
+    Route::prefix('addresses')->controller(AddressController::class)->group(function () {
+        Route::post('/',         'store')->name('addresses.store');
     });
 });

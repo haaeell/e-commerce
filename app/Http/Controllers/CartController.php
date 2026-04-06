@@ -34,10 +34,20 @@ class CartController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity'   => 'required|integer|min:1',
-            'variant_id' => 'nullable|exists:product_variants,id'
+            'product_variant_id' => 'nullable|exists:product_variants,id'
         ]);
 
         $product = Product::findOrFail($request->product_id);
+
+        $variantId = $request->product_variant_id;
+        $price = $product->price;
+
+        if ($variantId) {
+            $variant = \App\Models\ProductVariant::find($variantId);
+            if ($variant) {
+                $price = $variant->price;
+            }
+        }
 
         $cart = Cart::firstOrCreate([
             'user_id' => Auth::id()
@@ -45,7 +55,7 @@ class CartController extends Controller
 
         $cartItem = CartItem::where('cart_id', $cart->id)
             ->where('product_id', $request->product_id)
-            ->where('variant_id', $request->variant_id)
+            ->where('variant_id', $variantId)
             ->first();
 
         if ($cartItem) {
@@ -56,9 +66,9 @@ class CartController extends Controller
             CartItem::create([
                 'cart_id'    => $cart->id,
                 'product_id' => $request->product_id,
-                'variant_id' => $request->variant_id,
+                'variant_id' => $variantId,
                 'qty'        => $request->quantity,
-                'price'      => $product->price
+                'price'      => $price
             ]);
         }
 
