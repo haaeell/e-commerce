@@ -19,6 +19,7 @@ class Product extends Model
         'short_description',
         'price',
         'compare_price',
+        'modal_price',
         'stock',
         'weight',
         'sku',

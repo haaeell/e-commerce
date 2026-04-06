@@ -132,15 +132,22 @@
                 <i class="fa-solid fa-chart-simple w-5"></i> Dashboard
             </a>
 
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-6">Katalog</p>
-            <a href="#"
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-6">Master</p>
+            <a href="/categories"
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                <i class="fa-solid fa-layer-group w-5"></i> Kategori
+            </a>
+
+            <a href="/brands"
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                <i class="fa-solid fa-copyright w-5"></i> Brand
+            </a>
+
+            <a href="/products"
                 class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
                 <i class="fa-solid fa-box w-5"></i> Produk
             </a>
-            <a href="#"
-                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
-                <i class="fa-solid fa-tags w-5"></i> Kategori & Brand
-            </a>
+
 
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-6">Penjualan</p>
             <a href="#"
@@ -148,7 +155,7 @@
                 <i class="fa-solid fa-cart-shopping w-5"></i> Pesanan
                 <span class="ml-auto bg-orange-100 text-orange-600 text-[10px] px-2 py-0.5 rounded-lg">8</span>
             </a>
-            <a href="#"
+            <a href="/coupons"
                 class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
                 <i class="fa-solid fa-ticket w-5"></i> Kupon Promo
             </a>
@@ -181,8 +188,7 @@
                     <i class="fa-solid fa-bars-staggered"></i>
                 </button>
                 <div class="hidden md:block">
-                    <h1 class="text-xl md:text-2xl font-extrabold text-brand-dark tracking-tight">Overview</h1>
-                    <p class="text-gray-400 text-sm font-medium">Monitoring performa toko Al-Hayya.</p>
+                    <p class="text-gray-400 text-sm font-medium">Panel Admin toko Al-Hayya.</p>
                 </div>
             </div>
 
@@ -199,11 +205,15 @@
                 <div class="relative">
                     <button id="userDropdownBtn"
                         class="flex items-center gap-3 bg-white p-1.5 pr-4 border border-gray-100 rounded-2xl shadow-sm hover:border-brand-primary transition-all">
-                        <img src="https://ui-avatars.com/api/?name=Haikal&background=81C784&color=fff"
+                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}&background=81C784&color=fff"
                             class="w-9 h-9 rounded-xl shadow-sm" alt="Admin">
                         <div class="text-left hidden xs:block">
-                            <p class="text-[12px] font-extrabold text-brand-dark leading-none mb-1">Haikal</p>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Admin Utama</p>
+                            <p class="text-[12px] font-extrabold text-brand-dark leading-none mb-1">
+                                {{ Auth::user()->name }}
+                            </p>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
+                                {{ Auth::user()->role }}
+                            </p>
                         </div>
                         <i class="fa-solid fa-chevron-down text-[10px] text-gray-300 ml-1"></i>
                     </button>

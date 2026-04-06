@@ -98,6 +98,7 @@ return new class extends Migration
             $table->text('short_description')->nullable();
             $table->decimal('price', 15, 2);
             $table->decimal('compare_price', 15, 2)->nullable();
+            $table->decimal('modal_price', 15, 2)->nullable();
             $table->unsignedInteger('stock')->default(0);
             $table->decimal('weight', 8, 2)->nullable();  // gram
             $table->string('sku')->unique()->nullable();

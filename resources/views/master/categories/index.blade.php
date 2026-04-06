@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'Categories')
+@section('title', 'Kategori Produk')
 
 @section('content')
     <div class="mx-auto">
         <div class="flex justify-between items-center mb-8">
             <div>
-                <h1 class="text-xl md:text-2xl font-extrabold text-brand-dark tracking-tight">Categories</h1>
+                <h1 class="text-xl md:text-2xl font-extrabold text-brand-dark tracking-tight">Kategori Produk</h1>
                 <nav class="text-xs md:text-sm text-gray-400 font-medium mt-1">
                     <ol class="flex items-center gap-2">
                         <li><a href="/home" class="hover:text-brand-primary transition-colors">Dashboard</a></li>
                         <li><i class="fa-solid fa-chevron-right text-[10px]"></i></li>
-                        <li class="text-brand-dark">Categories</li>
+                        <li class="text-brand-dark">Kategori Produk</li>
                     </ol>
                 </nav>
             </div>
