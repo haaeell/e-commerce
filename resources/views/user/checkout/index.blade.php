@@ -101,8 +101,8 @@
                                             class="courier-checkbox peer sr-only">
                                         <div
                                             class="py-3 px-4 border-2 border-gray-100 rounded-2xl text-center
-                                                                                                                                                                    peer-checked:border-brand-primary peer-checked:bg-soft-mint/30
-                                                                                                                                                                    transition-all cursor-pointer select-none">
+                                                                                                                                                                                    peer-checked:border-brand-primary peer-checked:bg-soft-mint/30
+                                                                                                                                                                                    transition-all cursor-pointer select-none">
                                             <span
                                                 class="text-xs font-black text-gray-400 peer-checked:text-brand-primary uppercase tracking-widest">
                                                 {{ $name }}
@@ -116,7 +116,7 @@
 
                             <button type="button" id="btn-cek-ongkir"
                                 class="w-full py-3 bg-brand-primary text-brand-dark font-black rounded-xl text-sm
-                                                                                               hover:-translate-y-0.5 transition-all active:scale-95">
+                                                                                                       hover:-translate-y-0.5 transition-all active:scale-95">
                                 <i class="fa-solid fa-magnifying-glass mr-2"></i> Cek Ongkir
                             </button>
 
@@ -200,9 +200,9 @@
                             <button type="submit" id="btn-submit" @if(!$address || !$address->rajaongkir_destination_id)
                             disabled @endif
                                 class="group relative w-full py-4 bg-brand-primary text-brand-dark font-black rounded-2xl
-                                                                                               flex items-center justify-center gap-3 overflow-hidden transition-all active:scale-95
-                                                                                               shadow-xl hover:shadow-brand-primary/40 hover:-translate-y-1
-                                                                                               disabled:bg-gray-600 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none">
+                                                                                                       flex items-center justify-center gap-3 overflow-hidden transition-all active:scale-95
+                                                                                                       shadow-xl hover:shadow-brand-primary/40 hover:-translate-y-1
+                                                                                                       disabled:bg-gray-600 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none">
                                 <span class="relative z-10 uppercase tracking-tighter">Bayar Sekarang</span>
                                 <i
                                     class="fa-solid fa-arrow-right text-xs relative z-10 group-hover:translate-x-1 transition-transform"></i>
@@ -367,8 +367,8 @@
 
                             <button type="submit" id="btn-save-address" disabled
                                 class="w-full py-4 bg-brand-primary text-brand-dark font-black rounded-xl shadow-lg
-                                                                                               transition-all active:scale-95
-                                                                                               disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100">
+                                                                                                       transition-all active:scale-95
+                                                                                                       disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100">
                                 <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan & Gunakan Alamat
                             </button>
                         </form>
@@ -430,15 +430,15 @@
                             }
                             results.forEach(function (item) {
                                 $list.append(`
-                                <div class="px-4 py-3 hover:bg-soft-mint/20 cursor-pointer transition-colors"
-                                     data-id="${item.id}" data-province="${item.province_name}"
-                                     data-city="${item.city_name}" data-district="${item.district_name}"
-                                     data-subdistrict="${item.subdistrict_name}" data-zipcode="${item.zip_code}"
-                                     data-label="${item.label}">
-                                    <p class="font-bold text-brand-dark text-xs">${item.subdistrict_name}, ${item.district_name}</p>
-                                    <p class="text-[10px] text-gray-400">${item.city_name}, ${item.province_name} ${item.zip_code}</p>
-                                </div>
-                            `);
+                                        <div class="px-4 py-3 hover:bg-soft-mint/20 cursor-pointer transition-colors"
+                                             data-id="${item.id}" data-province="${item.province_name}"
+                                             data-city="${item.city_name}" data-district="${item.district_name}"
+                                             data-subdistrict="${item.subdistrict_name}" data-zipcode="${item.zip_code}"
+                                             data-label="${item.label}">
+                                            <p class="font-bold text-brand-dark text-xs">${item.subdistrict_name}, ${item.district_name}</p>
+                                            <p class="text-[10px] text-gray-400">${item.city_name}, ${item.province_name} ${item.zip_code}</p>
+                                        </div>
+                                    `);
                             });
                         }
                     });
@@ -527,63 +527,55 @@
                 services.sort((a, b) => parseInt(a.cost) - parseInt(b.cost));
 
                 let html = `
-                            <div class="flex items-center justify-between mb-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
-                                <div class="flex items-center gap-2">
-                                    <i class="fa-solid fa-bolt text-emerald-500"></i>
-                                    <p class="text-xs font-bold text-emerald-700">
-                                        <span id="instant-total">${services.length}</span> ongkir tersedia 
-                                        <span class="text-emerald-600">(mulai Rp${new Intl.NumberFormat('id-ID').format(services[0].cost)})</span>
-                                    </p>
-                                </div>
-                                <div class="flex gap-1">
-                                    <button type="button" onclick="sortInstant('price')" class="p-1 text-xs bg-white rounded-full shadow-sm hover:bg-emerald-50">
-                                        💰
-                                    </button>
-                                    <button type="button" onclick="sortInstant('etd')" class="p-1 text-xs bg-white rounded-full shadow-sm hover:bg-emerald-50">
-                                        ⏱️
-                                    </button>
-                                </div>
-                            </div>
-                        `;
+                                    <div class="flex items-center justify-between mb-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fa-solid fa-bolt text-emerald-500"></i>
+                                            <p class="text-xs font-bold text-emerald-700">
+                                                <span id="instant-total">${services.length}</span> ongkir tersedia 
+                                                <span class="text-emerald-600">(mulai Rp${new Intl.NumberFormat('id-ID').format(services[0].cost)})</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                `;
 
                 services.forEach(function (svc, index) {
                     const cost = parseInt(svc.cost);
                     const isCheapest = index === 0;
 
                     html += `
-                                <label class="instant-shipping-option block cursor-pointer transition-all hover:scale-[1.02]">
-                                    <input type="radio" name="shipping_service_radio" value="${cost}"
-                                           data-code="${svc.code}" data-service="${svc.service}" 
-                                           data-name="${svc.name}" data-etd="${svc.etd}"
-                                           class="peer sr-only shipping-option ${isCheapest ? 'checked' : ''}">
-                                    <div class="group relative p-4 border-2 rounded-2xl flex justify-between items-center
-                                                ${isCheapest ? 'border-emerald-400 bg-emerald-50/50 shadow-lg ring-2 ring-emerald-200/50' : 'border-gray-100 hover:border-gray-200'}
-                                                peer-checked:border-brand-primary peer-checked:bg-soft-mint/30">
+                                        <label class="instant-shipping-option block cursor-pointer transition-all hover:scale-[1.02]">
+                                            <input type="radio" name="shipping_service_radio" value="${cost}"
+                                                   data-code="${svc.code}" data-service="${svc.service}" 
+                                                   data-name="${svc.name}" data-etd="${svc.etd}"
+                                                   class="peer sr-only shipping-option ${isCheapest ? 'checked' : ''}">
+                                            <div class="group relative p-4 border-2 rounded-2xl flex justify-between items-center
+                                                        ${isCheapest ? 'border-emerald-400 bg-emerald-50/50 shadow-lg ring-2 ring-emerald-200/50' : 'border-gray-100 hover:border-gray-200'}
+                                                        peer-checked:border-brand-primary peer-checked:bg-soft-mint/30">
 
-                                        ${isCheapest ? `
-                                        <div class="absolute -top-2 -right-2 bg-emerald-500 text-white px-2 py-1 rounded-full text-[9px] font-bold shadow-lg animate-pulse">
-                                            💰 TERMUDAH
-                                        </div>
-                                        ` : ''}
+                                                ${isCheapest ? `
+                                                <div class="absolute -top-2 -right-2 bg-emerald-500 text-white px-2 py-1 rounded-full text-[9px] font-bold shadow-lg animate-pulse">
+                                                    💰 TERMUDAH
+                                                </div>
+                                                ` : ''}
 
-                                        <div class="flex-1">
-                                            <div class="flex items-center gap-2 mb-1">
-                                                <span class="text-sm font-bold text-brand-dark">${svc.name}</span>
-                                                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">${svc.service}</span>
+                                                <div class="flex-1">
+                                                    <div class="flex items-center gap-2 mb-1">
+                                                        <span class="text-sm font-bold text-brand-dark">${svc.name}</span>
+                                                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">${svc.service}</span>
+                                                    </div>
+                                                    <p class="text-[10px] text-gray-500">${svc.description}</p>
+                                                    <p class="text-[10px] font-medium text-emerald-600 mt-1">Est. ${svc.etd} hari</p>
+                                                </div>
+
+                                                <div class="text-right ml-3">
+                                                    <p class="text-lg font-black ${isCheapest ? 'text-emerald-600 drop-shadow-sm' : 'text-brand-primary'}">
+                                                        Rp${new Intl.NumberFormat('id-ID').format(cost)}
+                                                    </p>
+                                                    ${isCheapest ? '<p class="text-[9px] text-emerald-600 font-bold mt-0.5">Paling murah!</p>' : ''}
+                                                </div>
                                             </div>
-                                            <p class="text-[10px] text-gray-500">${svc.description}</p>
-                                            <p class="text-[10px] font-medium text-emerald-600 mt-1">Est. ${svc.etd} hari</p>
-                                        </div>
-
-                                        <div class="text-right ml-3">
-                                            <p class="text-lg font-black ${isCheapest ? 'text-emerald-600 drop-shadow-sm' : 'text-brand-primary'}">
-                                                Rp${new Intl.NumberFormat('id-ID').format(cost)}
-                                            </p>
-                                            ${isCheapest ? '<p class="text-[9px] text-emerald-600 font-bold mt-0.5">Paling murah!</p>' : ''}
-                                        </div>
-                                    </div>
-                                </label>
-                            `;
+                                        </label>
+                                    `;
                 });
 
                 $('#shipping-services').html(html);
@@ -592,12 +584,12 @@
 
             function resetShippingDisplay() {
                 $('#shipping-services').html(`
-                            <div class="text-center py-8">
-                                <i class="fa-solid fa-truck text-gray-300 text-3xl mb-3"></i>
-                                <p class="text-sm text-gray-500 mb-2">Pilih kurir untuk melihat ongkir secara instan</p>
-                                <p class="text-xs text-gray-400">Klik kurir di atas → ongkir muncul otomatis ✨</p>
-                            </div>
-                        `);
+                                    <div class="text-center py-8">
+                                        <i class="fa-solid fa-truck text-gray-300 text-3xl mb-3"></i>
+                                        <p class="text-sm text-gray-500 mb-2">Pilih kurir untuk melihat ongkir secara instan</p>
+                                        <p class="text-xs text-gray-400">Klik kurir di atas → ongkir muncul otomatis ✨</p>
+                                    </div>
+                                `);
                 $('#selected_shipping_cost').val('');
                 updateTotals(0);
                 $('#selected_service_info').addClass('hidden');
@@ -605,11 +597,11 @@
 
             function showLoading(message) {
                 $('#shipping-services').html(`
-                            <div class="flex flex-col items-center justify-center py-12 text-center">
-                                <div class="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4"></div>
-                                <p class="text-sm text-gray-600">${message}</p>
-                            </div>
-                        `);
+                                    <div class="flex flex-col items-center justify-center py-12 text-center">
+                                        <div class="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4"></div>
+                                        <p class="text-sm text-gray-600">${message}</p>
+                                    </div>
+                                `);
             }
 
             function updateTotals(shippingCost) {
@@ -639,23 +631,12 @@
                 $('#btn-submit').prop('disabled', false);
             });
 
-            window.sortInstant = function (type) {
-                if (currentServices.length === 0) return;
-
-                if (type === 'price') {
-                    currentServices.sort((a, b) => parseInt(a.cost) - parseInt(b.cost));
-                } else if (type === 'etd') {
-                    currentServices.sort((a, b) => parseInt(a.etd) - parseInt(b.etd));
-                }
-
-                displayServices(currentServices);
-            };
 
             $('#btn-cek-ongkir').prop('disabled', true).html(`
-                        <i class="fa-solid fa-bolt text-emerald-500 mr-2"></i>
-                        <span class="font-bold">INSTANT</span>
-                        <span class="text-xs ml-1">(Auto)</span>
-                    `).addClass('bg-emerald-50 border-emerald-200 text-emerald-700 cursor-default');
+                                <i class="fa-solid fa-bolt text-emerald-500 mr-2"></i>
+                                <span class="font-bold">INSTANT</span>
+                                <span class="text-xs ml-1">(Auto)</span>
+                            `).addClass('bg-emerald-50 border-emerald-200 text-emerald-700 cursor-default');
 
             $('#checkoutForm').on('submit', function (e) {
                 if (!$('#selected_shipping_cost').val()) {
@@ -671,11 +652,11 @@
                     warning: 'bg-amber-50 border-amber-200 text-amber-700'
                 };
                 $('#shipping-services').html(`
-                            <div class="p-6 border-2 rounded-2xl ${colors[type] || 'bg-blue-50 border-blue-200 text-blue-700'} flex items-center gap-3">
-                                <i class="fa-solid fa-${type === 'error' ? 'xmark-circle' : 'triangle-exclamation'}"></i>
-                                <p class="text-sm">${message}</p>
-                            </div>
-                        `);
+                                    <div class="p-6 border-2 rounded-2xl ${colors[type] || 'bg-blue-50 border-blue-200 text-blue-700'} flex items-center gap-3">
+                                        <i class="fa-solid fa-${type === 'error' ? 'xmark-circle' : 'triangle-exclamation'}"></i>
+                                        <p class="text-sm">${message}</p>
+                                    </div>
+                                `);
             }
         });
     </script>
