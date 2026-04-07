@@ -43,6 +43,7 @@ class AddressController extends Controller
             'postal_code' => $request->postal_code,
             'address' => $request->address,
             'is_default' => $isDefault,
+            'rajaongkir_destination_id' => $request->rajaongkir_destination_id ?? null,
         ]);
 
         return back()->with('success', 'Alamat berhasil ditambahkan!');

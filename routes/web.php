@@ -110,8 +110,9 @@ Route::middleware(['auth'])->group(function () {
     // Checkout
     Route::prefix('checkout')->controller(CheckoutController::class)->group(function () {
         Route::get('/',         'index')->name('checkout.index');
-        Route::post('/set-address', [CheckoutController::class, 'setAddress'])->name('checkout.set-address');
-        Route::post('/check-ongkir', 'checkOngkir')->name('checkout.check-ongkir'); // Tambahkan ini
+        Route::post('/set-address', 'setAddress')->name('checkout.set-address');
+        Route::post('/check-ongkir', 'checkOngkir')->name('checkout.check-ongkir');
+        Route::get('/search-destination', 'searchDestination')->name('checkout.search-destination');
     });
 
     Route::prefix('addresses')->controller(AddressController::class)->group(function () {

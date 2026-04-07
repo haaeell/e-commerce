@@ -9,6 +9,8 @@ class UserAddress extends Model
 {
     use HasFactory;
 
+    protected $table = 'user_addresses';
+
     protected $fillable = [
         'user_id',
         'label',
@@ -20,7 +22,8 @@ class UserAddress extends Model
         'district',
         'subdistrict',
         'postal_code',
-        'is_default'
+        'is_default',
+        'rajaongkir_destination_id',
     ];
 
     public function user()
