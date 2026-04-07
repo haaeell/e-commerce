@@ -38,7 +38,7 @@ class OrderController extends Controller
             'items.variant',
             'payment',
             'shipment',
-            'addresses',
+            'address',
             'coupon',
             'reviews.product',
         ])->findOrFail($id);

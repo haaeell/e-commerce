@@ -303,26 +303,78 @@
         @yield('content')
     </main>
 
-    <footer class="bg-brand-dark text-white pt-20 pb-10 mt-16 rounded-t-[50px]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            <div class="space-y-4">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-wand-magic-sparkles text-brand-secondary text-xl"></i>
-                    <span class="text-white font-extrabold text-xl tracking-tight uppercase">Al-Hayya</span>
+    <footer class="bg-brand-dark text-white pt-24 pb-12 mt-20 rounded-t-[60px] relative overflow-hidden">
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-brand-secondary/30 to-transparent">
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20">
+                <div class="md:col-span-5 space-y-8">
+                    <div class="flex items-center gap-3 group">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center shadow-lg shadow-brand-primary/20">
+                            <i class="fa-solid fa-wand-magic-sparkles text-white text-xl"></i>
+                        </div>
+                        <span
+                            class="text-2xl font-black tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-white to-brand-secondary/80">
+                            Al-Hayya
+                        </span>
+                    </div>
+                    <p class="text-brand-secondary/70 text-lg leading-relaxed max-w-sm">
+                        Elegansi dalam kesantunan. Mewujudkan standar baru hijab premium untuk wanita yang menghargai
+                        kualitas dan estetika.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#"
+                            class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brand-primary hover:scale-110 transition-all duration-300 group">
+                            <i class="fa-brands fa-instagram text-xl group-hover:text-white"></i>
+                        </a>
+                        <a href="#"
+                            class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brand-primary hover:scale-110 transition-all duration-300 group">
+                            <i class="fa-brands fa-tiktok text-xl group-hover:text-white"></i>
+                        </a>
+                        <a href="#"
+                            class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brand-primary hover:scale-110 transition-all duration-300 group">
+                            <i class="fa-brands fa-whatsapp text-xl group-hover:text-white"></i>
+                        </a>
+                    </div>
                 </div>
-                <p class="text-brand-secondary/70 text-sm leading-relaxed">Elegansi dalam Kesantunan. Temukan koleksi
-                    hijab premium terbaik bersama kami.</p>
-                <div class="flex gap-4 pt-4">
-                    <a href="#"
-                        class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-brand-primary transition-colors"><i
-                            class="fa-brands fa-instagram"></i></a>
-                    <a href="#"
-                        class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-brand-primary transition-colors"><i
-                            class="fa-brands fa-tiktok"></i></a>
+
+                <div class="md:col-span-2 space-y-6">
+                    <h4 class="text-sm font-bold uppercase tracking-widest text-brand-secondary">Koleksi</h4>
+                    <ul class="space-y-4 text-brand-secondary/60">
+                        <li><a href="#" class="hover:text-white transition-colors duration-200">Best Seller</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors duration-200">Hijab Instan</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors duration-200">Pashmina</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors duration-200">Premium Silk</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-5 space-y-6">
+                    <h4 class="text-sm font-bold uppercase tracking-widest text-brand-secondary">Dapatkan Update Terbaru
+                    </h4>
+                    <p class="text-brand-secondary/60 text-sm">Berlangganan newsletter untuk info promo eksklusif.</p>
+                    <form
+                        class="flex gap-2 p-1.5 bg-white/5 border border-white/10 rounded-2xl focus-within:border-brand-primary/50 transition-all">
+                        <input type="email" placeholder="Email Anda"
+                            class="bg-transparent border-none focus:ring-0 px-4 py-2 w-full text-sm">
+                        <button
+                            class="bg-white text-brand-dark px-6 py-2 rounded-xl font-bold text-sm hover:bg-brand-secondary transition-colors">
+                            Join
+                        </button>
+                    </form>
                 </div>
             </div>
-            <div class="col-span-3 text-right text-brand-secondary/50 text-xs self-end">
-                &copy; 2026 AL-HAYYA HIJAB. All rights reserved.
+
+            <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-brand-secondary/40 text-xs tracking-widest uppercase">
+                    &copy; 2026 AL-HAYYA HIJAB. Crafted with Grace.
+                </p>
+                <div class="flex gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-secondary/30">
+                    <a href="#" class="hover:text-brand-secondary transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-brand-secondary transition-colors">Terms of Service</a>
+                </div>
             </div>
         </div>
     </footer>
