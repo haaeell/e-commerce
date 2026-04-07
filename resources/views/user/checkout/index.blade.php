@@ -13,7 +13,7 @@
                 <h1 class="text-2xl md:text-3xl font-extrabold text-brand-dark">Checkout</h1>
             </div>
 
-            <form action="#" method="POST" id="checkoutForm">
+            <form action="{{ route('checkout.store') }}" method="POST" id="checkoutForm">
                 @csrf
                 <div class="flex flex-col lg:flex-row gap-8">
 
@@ -55,17 +55,6 @@
                                             {{ $address->address }}, {{ $address->subdistrict }}, {{ $address->district }}<br>
                                             {{ $address->city }}, {{ $address->province }}, {{ $address->postal_code }}
                                         </p>
-                                        {{-- @if(!$address->rajaongkir_destination_id)
-                                        <div
-                                            class="flex items-center gap-2 mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
-                                            <i class="fa-solid fa-triangle-exclamation text-amber-500 text-xs"></i>
-                                            <p class="text-xs text-amber-700">
-                                                Alamat ini belum memiliki data destinasi pengiriman.
-                                                <a href="{{ route('addresses.edit', $address->id) }}"
-                                                    class="font-bold underline">Edit alamat</a> dan pilih ulang lokasi.
-                                            </p>
-                                        </div>
-                                        @endif --}}
                                     </div>
                                     <input type="hidden" name="address_id" value="{{ $address->id }}">
                                 </div>
@@ -101,8 +90,8 @@
                                             class="courier-checkbox peer sr-only">
                                         <div
                                             class="py-3 px-4 border-2 border-gray-100 rounded-2xl text-center
-                                                                                                                                                                                    peer-checked:border-brand-primary peer-checked:bg-soft-mint/30
-                                                                                                                                                                                    transition-all cursor-pointer select-none">
+                                                                                                                                                                                                                                                    peer-checked:border-brand-primary peer-checked:bg-soft-mint/30
+                                                                                                                                                                                                                                                    transition-all cursor-pointer select-none">
                                             <span
                                                 class="text-xs font-black text-gray-400 peer-checked:text-brand-primary uppercase tracking-widest">
                                                 {{ $name }}
@@ -116,7 +105,7 @@
 
                             <button type="button" id="btn-cek-ongkir"
                                 class="w-full py-3 bg-brand-primary text-brand-dark font-black rounded-xl text-sm
-                                                                                                       hover:-translate-y-0.5 transition-all active:scale-95">
+                                                                                                                                       hover:-translate-y-0.5 transition-all active:scale-95">
                                 <i class="fa-solid fa-magnifying-glass mr-2"></i> Cek Ongkir
                             </button>
 
@@ -129,6 +118,64 @@
                             <input type="hidden" name="courier_service" id="selected_courier_service">
                             <input type="hidden" name="shipping_cost" id="selected_shipping_cost">
                             <input type="hidden" name="shipping_etd" id="selected_shipping_etd">
+                        </div>
+
+                        {{-- VOUCHER / KUPON --}}
+                        <div class="bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-gray-100">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div
+                                    class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center text-purple-500 text-sm">
+                                    <i class="fa-solid fa-ticket"></i>
+                                </div>
+                                <h2 class="text-lg font-bold text-brand-dark">Voucher / Kupon</h2>
+                            </div>
+
+                            @if($appliedCoupon)
+                                {{-- KUPON SUDAH AKTIF --}}
+                                <div id="coupon-applied-box"
+                                    class="flex items-center justify-between p-4 bg-purple-50 border-2 border-purple-300 rounded-2xl">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
+                                            <i class="fa-solid fa-tag"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-black text-purple-700">{{ $appliedCoupon->code }}</p>
+                                            <p class="text-xs text-purple-500">{{ $appliedCoupon->name }}</p>
+                                            <p class="text-xs font-bold text-green-600 mt-0.5">
+                                                Hemat Rp{{ number_format($discountAmount, 0, ',', '.') }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="btn-remove-coupon"
+                                        class="text-xs font-bold text-red-400 hover:text-red-600 transition-colors px-3 py-1 rounded-lg hover:bg-red-50">
+                                        <i class="fa-solid fa-xmark mr-1"></i> Hapus
+                                    </button>
+                                </div>
+                                <input type="hidden" name="coupon_code" id="coupon_code_input"
+                                    value="{{ $appliedCoupon->code }}">
+                            @else
+                                {{-- INPUT KUPON --}}
+                                <div id="coupon-input-box" class="flex gap-3">
+                                    <div class="relative flex-1">
+                                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300">
+                                            <i class="fa-solid fa-ticket text-sm"></i>
+                                        </div>
+                                        <input type="text" id="coupon_input" placeholder="Masukkan kode voucher"
+                                            autocomplete="off" autocapitalize="characters"
+                                            class="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-gray-200 text-sm font-bold
+                                                                                               uppercase tracking-widest focus:outline-none focus:border-purple-400 transition-colors">
+                                    </div>
+                                    <button type="button" id="btn-apply-coupon"
+                                        class="px-5 py-3.5 bg-purple-500 text-white font-black rounded-xl text-sm
+                                                                                           hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap
+                                                                                           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
+                                        Pakai
+                                    </button>
+                                </div>
+                                <div id="coupon-message" class="mt-3 hidden"></div>
+                                <input type="hidden" name="coupon_code" id="coupon_code_input" value="">
+                            @endif
                         </div>
 
                     </div>
@@ -169,6 +216,17 @@
                                     <span
                                         class="font-bold text-white">Rp{{ number_format($total_price, 0, ',', '.') }}</span>
                                 </div>
+
+                                <div class="flex justify-between text-xs text-white/60" id="discount-row"
+                                    style="{{ $discountAmount > 0 ? '' : 'display:none' }}">
+                                    <span class="text-purple-300 flex items-center gap-1">
+                                        <i class="fa-solid fa-tag text-[9px]"></i>
+                                        Diskon Voucher
+                                    </span>
+                                    <span class="font-bold text-purple-300" id="discount_display">
+                                        -Rp{{ number_format($discountAmount, 0, ',', '.') }}
+                                    </span>
+                                </div>
                                 <div class="flex justify-between text-xs text-white/60">
                                     <span>Total Ongkos Kirim</span>
                                     <span class="font-bold text-white" id="shipping_cost_display">Rp0</span>
@@ -200,9 +258,9 @@
                             <button type="submit" id="btn-submit" @if(!$address || !$address->rajaongkir_destination_id)
                             disabled @endif
                                 class="group relative w-full py-4 bg-brand-primary text-brand-dark font-black rounded-2xl
-                                                                                                       flex items-center justify-center gap-3 overflow-hidden transition-all active:scale-95
-                                                                                                       shadow-xl hover:shadow-brand-primary/40 hover:-translate-y-1
-                                                                                                       disabled:bg-gray-600 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none">
+                                                                                                                                       flex items-center justify-center gap-3 overflow-hidden transition-all active:scale-95
+                                                                                                                                       shadow-xl hover:shadow-brand-primary/40 hover:-translate-y-1
+                                                                                                                                       disabled:bg-gray-600 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none">
                                 <span class="relative z-10 uppercase tracking-tighter">Bayar Sekarang</span>
                                 <i
                                     class="fa-solid fa-arrow-right text-xs relative z-10 group-hover:translate-x-1 transition-transform"></i>
@@ -367,8 +425,8 @@
 
                             <button type="submit" id="btn-save-address" disabled
                                 class="w-full py-4 bg-brand-primary text-brand-dark font-black rounded-xl shadow-lg
-                                                                                                       transition-all active:scale-95
-                                                                                                       disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100">
+                                                                                                                                       transition-all active:scale-95
+                                                                                                                                       disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100">
                                 <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan & Gunakan Alamat
                             </button>
                         </form>
@@ -380,12 +438,70 @@
     </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
     <script>
         $(document).ready(function () {
+
+            // ─── STATE ──────────────────────────────────────────────────────────
             const subtotal = {{ $total_price }};
             const totalWeight = {{ $total_weight }};
             const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            let isCheckingOngkir = false;
+            let currentServices = [];
+            let currentDiscount = {{ $discountAmount ?? 0 }};
+            let currentShipping = 0;
+
+            // ─── HELPERS ────────────────────────────────────────────────────────
+
+            function formatRupiah(amount) {
+                return 'Rp' + new Intl.NumberFormat('id-ID').format(amount);
+            }
+
+            function updateTotals() {
+                const grandTotal = subtotal - currentDiscount + currentShipping;
+                $('#shipping_cost_display').text(formatRupiah(currentShipping));
+                $('#grand_total_display').text(formatRupiah(grandTotal));
+            }
+
+            function showShippingMessage(type, message) {
+                const colors = {
+                    error: 'bg-red-50 border-red-200 text-red-700',
+                    warning: 'bg-amber-50 border-amber-200 text-amber-700',
+                };
+                const icon = type === 'error' ? 'xmark-circle' : 'triangle-exclamation';
+                $('#shipping-services').html(`
+                    <div class="p-6 border-2 rounded-2xl ${colors[type]} flex items-center gap-3">
+                        <i class="fa-solid fa-${icon}"></i>
+                        <p class="text-sm">${message}</p>
+                    </div>
+                `);
+            }
+
+            function showCouponMessage(type, text) {
+                const styles = {
+                    success: 'bg-green-50 border-green-200 text-green-700',
+                    error: 'bg-red-50 border-red-200 text-red-700',
+                };
+                const icon = type === 'success' ? 'circle-check' : 'circle-xmark';
+                $('#coupon-message').removeClass('hidden').html(`
+                    <div class="flex items-center gap-2 p-3 border-2 rounded-xl text-xs font-bold ${styles[type]}">
+                        <i class="fa-solid fa-${icon}"></i>
+                        ${text}
+                    </div>
+                `);
+            }
+
+            function showLoading(message) {
+                $('#shipping-services').html(`
+                    <div class="flex flex-col items-center justify-center py-12 text-center">
+                        <div class="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4"></div>
+                        <p class="text-sm text-gray-600">${message}</p>
+                    </div>
+                `);
+            }
+
+            // ─── ADDRESS MODAL ───────────────────────────────────────────────────
 
             window.toggleAddressModal = function () {
                 $('#addressModal').toggleClass('hidden');
@@ -393,271 +509,324 @@
             };
 
             window.switchAddressTab = function (tab) {
-                if (tab === 'new') {
-                    $('#address-list-section').addClass('hidden');
-                    $('#address-new-section').removeClass('hidden');
-                    $('#tab-new').addClass('border-brand-primary text-brand-primary').removeClass('border-transparent text-gray-400');
-                    $('#tab-list').addClass('border-transparent text-gray-400').removeClass('border-brand-primary text-brand-primary');
-                } else {
-                    $('#address-new-section').addClass('hidden');
-                    $('#address-list-section').removeClass('hidden');
-                    $('#tab-list').addClass('border-brand-primary text-brand-primary').removeClass('border-transparent text-gray-400');
-                    $('#tab-new').addClass('border-transparent text-gray-400').removeClass('border-brand-primary text-brand-primary');
-                }
+                const isNew = tab === 'new';
+                $('#address-list-section').toggleClass('hidden', isNew);
+                $('#address-new-section').toggleClass('hidden', !isNew);
+                $('#tab-new').toggleClass('border-brand-primary text-brand-primary', isNew)
+                    .toggleClass('border-transparent text-gray-400', !isNew);
+                $('#tab-list').toggleClass('border-brand-primary text-brand-primary', !isNew)
+                    .toggleClass('border-transparent text-gray-400', isNew);
             };
 
+            // ─── DESTINATION SEARCH ──────────────────────────────────────────────
+
             let searchTimer;
+
             $('#destination_search').on('input', function () {
                 const query = $(this).val().trim();
                 clearTimeout(searchTimer);
+
                 if (query.length < 3) {
                     $('#destination_results').addClass('hidden').empty();
                     return;
                 }
+
                 searchTimer = setTimeout(function () {
-                    $('#destination_results').removeClass('hidden').html(
-                        '<div class="px-4 py-3 text-xs text-gray-400 flex items-center gap-2"><i class="fa-solid fa-circle-notch fa-spin"></i> Mencari lokasi...</div>'
-                    );
+                    $('#destination_results').removeClass('hidden').html(`
+                        <div class="px-4 py-3 text-xs text-gray-400 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-notch fa-spin"></i> Mencari lokasi...
+                        </div>
+                    `);
+
                     $.ajax({
                         url: "{{ route('checkout.search-destination') }}",
                         method: 'GET',
                         data: { search: query },
                         success: function (results) {
                             const $list = $('#destination_results').empty();
-                            if (!results || results.length === 0) {
+
+                            if (!results?.length) {
                                 $list.html('<div class="px-4 py-3 text-xs text-gray-400">Lokasi tidak ditemukan.</div>');
                                 return;
                             }
+
                             results.forEach(function (item) {
                                 $list.append(`
-                                        <div class="px-4 py-3 hover:bg-soft-mint/20 cursor-pointer transition-colors"
-                                             data-id="${item.id}" data-province="${item.province_name}"
-                                             data-city="${item.city_name}" data-district="${item.district_name}"
-                                             data-subdistrict="${item.subdistrict_name}" data-zipcode="${item.zip_code}"
-                                             data-label="${item.label}">
-                                            <p class="font-bold text-brand-dark text-xs">${item.subdistrict_name}, ${item.district_name}</p>
-                                            <p class="text-[10px] text-gray-400">${item.city_name}, ${item.province_name} ${item.zip_code}</p>
-                                        </div>
-                                    `);
+                                    <div class="px-4 py-3 hover:bg-soft-mint/20 cursor-pointer transition-colors"
+                                         data-id="${item.id}"
+                                         data-province="${item.province_name}"
+                                         data-city="${item.city_name}"
+                                         data-district="${item.district_name}"
+                                         data-subdistrict="${item.subdistrict_name}"
+                                         data-zipcode="${item.zip_code}">
+                                        <p class="font-bold text-brand-dark text-xs">${item.subdistrict_name}, ${item.district_name}</p>
+                                        <p class="text-[10px] text-gray-400">${item.city_name}, ${item.province_name} ${item.zip_code}</p>
+                                    </div>
+                                `);
                             });
-                        }
+                        },
                     });
                 }, 400);
             });
 
             $(document).on('click', '#destination_results > div[data-id]', function () {
-                const id = $(this).data('id');
-                const province = $(this).data('province');
-                const city = $(this).data('city');
-                const district = $(this).data('district');
-                const subdistrict = $(this).data('subdistrict');
-                const zipcode = $(this).data('zipcode');
+                const $el = $(this);
 
-                $('#dest_id').val(id);
-                $('#dest_province').val(province);
-                $('#dest_city').val(city);
-                $('#dest_district').val(district);
-                $('#dest_subdistrict').val(subdistrict);
-                $('#new_postal_code').val(zipcode);
+                $('#dest_id').val($el.data('id'));
+                $('#dest_province').val($el.data('province'));
+                $('#dest_city').val($el.data('city'));
+                $('#dest_district').val($el.data('district'));
+                $('#dest_subdistrict').val($el.data('subdistrict'));
+                $('#new_postal_code').val($el.data('zipcode'));
 
-                $('#destination_search').val(`${subdistrict}, ${district}`);
+                $('#destination_search').val(`${$el.data('subdistrict')}, ${$el.data('district')}`);
                 $('#destination_results').addClass('hidden').empty();
 
                 $('#dest_preview_label').text('Lokasi valid');
-                $('#dest_preview_detail').text(`Kode Pos: ${zipcode}`);
+                $('#dest_preview_detail').text(`Kode Pos: ${$el.data('zipcode')}`);
                 $('#dest_preview').removeClass('hidden');
                 $('#btn-save-address').prop('disabled', false);
             });
 
+            // Tutup dropdown saat klik di luar
             $(document).on('click', function (e) {
                 if (!$(e.target).closest('#destination_search, #destination_results').length) {
                     $('#destination_results').addClass('hidden');
                 }
             });
 
+            // ─── SHIPPING ────────────────────────────────────────────────────────
 
-            let isCheckingOngkir = false;
-            let currentServices = [];
+            // Nonaktifkan tombol cek ongkir (sudah auto)
+            $('#btn-cek-ongkir')
+                .prop('disabled', true)
+                .html('<i class="fa-solid fa-bolt text-emerald-500 mr-2"></i><span class="font-bold">INSTANT</span><span class="text-xs ml-1">(Auto)</span>')
+                .addClass('bg-emerald-50 border-emerald-200 text-emerald-700 cursor-default');
 
             $('.courier-checkbox').on('change', function () {
-                const selectedCouriers = $('.courier-checkbox:checked').map(function () {
+                const selected = $('.courier-checkbox:checked').map(function () {
                     return $(this).val();
                 }).get();
 
-                if (selectedCouriers.length > 0) {
-                    instantCheckOngkir(selectedCouriers);
-                } else {
-                    resetShippingDisplay();
-                }
+                selected.length > 0 ? instantCheckOngkir(selected) : resetShippingDisplay();
             });
 
             function instantCheckOngkir(couriers) {
                 if (isCheckingOngkir) return;
-
                 isCheckingOngkir = true;
                 showLoading('Mengecek ongkir secara instan...');
 
                 $.ajax({
                     url: "{{ route('checkout.check-ongkir') }}",
                     method: 'POST',
-                    data: {
-                        _token: csrfToken,
-                        couriers: couriers,
-                        weight: totalWeight,
-                    },
+                    data: { _token: csrfToken, couriers, weight: totalWeight },
                     success: function (services) {
                         currentServices = services;
                         displayServices(services);
-                        isCheckingOngkir = false;
                     },
                     error: function () {
                         showShippingMessage('error', 'Gagal cek ongkir. Coba lagi.');
+                    },
+                    complete: function () {
                         isCheckingOngkir = false;
-                    }
+                    },
                 });
             }
 
             function displayServices(services) {
-                if (!services || services.length === 0) {
+                if (!services?.length) {
                     showShippingMessage('error', 'Tidak ada layanan untuk kurir ini.');
                     return;
                 }
 
-                // **AUTO SORT TERMURAH**
                 services.sort((a, b) => parseInt(a.cost) - parseInt(b.cost));
 
                 let html = `
-                                    <div class="flex items-center justify-between mb-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
-                                        <div class="flex items-center gap-2">
-                                            <i class="fa-solid fa-bolt text-emerald-500"></i>
-                                            <p class="text-xs font-bold text-emerald-700">
-                                                <span id="instant-total">${services.length}</span> ongkir tersedia 
-                                                <span class="text-emerald-600">(mulai Rp${new Intl.NumberFormat('id-ID').format(services[0].cost)})</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                `;
+                    <div class="flex items-center gap-2 mb-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                        <i class="fa-solid fa-bolt text-emerald-500"></i>
+                        <p class="text-xs font-bold text-emerald-700">
+                            ${services.length} ongkir tersedia
+                            <span class="text-emerald-600">(mulai ${formatRupiah(services[0].cost)})</span>
+                        </p>
+                    </div>
+                `;
 
                 services.forEach(function (svc, index) {
                     const cost = parseInt(svc.cost);
                     const isCheapest = index === 0;
 
                     html += `
-                                        <label class="instant-shipping-option block cursor-pointer transition-all hover:scale-[1.02]">
-                                            <input type="radio" name="shipping_service_radio" value="${cost}"
-                                                   data-code="${svc.code}" data-service="${svc.service}" 
-                                                   data-name="${svc.name}" data-etd="${svc.etd}"
-                                                   class="peer sr-only shipping-option ${isCheapest ? 'checked' : ''}">
-                                            <div class="group relative p-4 border-2 rounded-2xl flex justify-between items-center
-                                                        ${isCheapest ? 'border-emerald-400 bg-emerald-50/50 shadow-lg ring-2 ring-emerald-200/50' : 'border-gray-100 hover:border-gray-200'}
-                                                        peer-checked:border-brand-primary peer-checked:bg-soft-mint/30">
+                        <label class="block cursor-pointer transition-all hover:scale-[1.02]">
+                            <input type="radio" name="shipping_service_radio" value="${cost}"
+                                   data-code="${svc.code}" data-service="${svc.service}"
+                                   data-name="${svc.name}" data-etd="${svc.etd}"
+                                   class="peer sr-only shipping-option">
+                            <div class="relative p-4 border-2 rounded-2xl flex justify-between items-center
+                                        ${isCheapest ? 'border-emerald-400 bg-emerald-50/50 shadow-lg ring-2 ring-emerald-200/50' : 'border-gray-100 hover:border-gray-200'}
+                                        peer-checked:border-brand-primary peer-checked:bg-soft-mint/30">
 
-                                                ${isCheapest ? `
-                                                <div class="absolute -top-2 -right-2 bg-emerald-500 text-white px-2 py-1 rounded-full text-[9px] font-bold shadow-lg animate-pulse">
-                                                    💰 TERMUDAH
-                                                </div>
-                                                ` : ''}
+                                ${isCheapest ? `
+                                <div class="absolute -top-2 -right-2 bg-emerald-500 text-white px-2 py-1 rounded-full text-[9px] font-bold shadow-lg animate-pulse">
+                                    💰 TERMURAH
+                                </div>` : ''}
 
-                                                <div class="flex-1">
-                                                    <div class="flex items-center gap-2 mb-1">
-                                                        <span class="text-sm font-bold text-brand-dark">${svc.name}</span>
-                                                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">${svc.service}</span>
-                                                    </div>
-                                                    <p class="text-[10px] text-gray-500">${svc.description}</p>
-                                                    <p class="text-[10px] font-medium text-emerald-600 mt-1">Est. ${svc.etd} hari</p>
-                                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-sm font-bold text-brand-dark">${svc.name}</span>
+                                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">${svc.service}</span>
+                                    </div>
+                                    <p class="text-[10px] text-gray-500">${svc.description}</p>
+                                    <p class="text-[10px] font-medium text-emerald-600 mt-1">Est. ${svc.etd} hari</p>
+                                </div>
 
-                                                <div class="text-right ml-3">
-                                                    <p class="text-lg font-black ${isCheapest ? 'text-emerald-600 drop-shadow-sm' : 'text-brand-primary'}">
-                                                        Rp${new Intl.NumberFormat('id-ID').format(cost)}
-                                                    </p>
-                                                    ${isCheapest ? '<p class="text-[9px] text-emerald-600 font-bold mt-0.5">Paling murah!</p>' : ''}
-                                                </div>
-                                            </div>
-                                        </label>
-                                    `;
+                                <div class="text-right ml-3">
+                                    <p class="text-lg font-black ${isCheapest ? 'text-emerald-600' : 'text-brand-primary'}">
+                                        ${formatRupiah(cost)}
+                                    </p>
+                                    ${isCheapest ? '<p class="text-[9px] text-emerald-600 font-bold mt-0.5">Paling murah!</p>' : ''}
+                                </div>
+                            </div>
+                        </label>
+                    `;
                 });
 
                 $('#shipping-services').html(html);
-                $('.shipping-option:checked').trigger('change');
             }
 
             function resetShippingDisplay() {
                 $('#shipping-services').html(`
-                                    <div class="text-center py-8">
-                                        <i class="fa-solid fa-truck text-gray-300 text-3xl mb-3"></i>
-                                        <p class="text-sm text-gray-500 mb-2">Pilih kurir untuk melihat ongkir secara instan</p>
-                                        <p class="text-xs text-gray-400">Klik kurir di atas → ongkir muncul otomatis ✨</p>
-                                    </div>
-                                `);
+                    <div class="text-center py-8">
+                        <i class="fa-solid fa-truck text-gray-300 text-3xl mb-3"></i>
+                        <p class="text-sm text-gray-500 mb-2">Pilih kurir untuk melihat ongkir secara instan</p>
+                        <p class="text-xs text-gray-400">Klik kurir di atas → ongkir muncul otomatis ✨</p>
+                    </div>
+                `);
+                currentShipping = 0;
                 $('#selected_shipping_cost').val('');
-                updateTotals(0);
                 $('#selected_service_info').addClass('hidden');
-            }
-
-            function showLoading(message) {
-                $('#shipping-services').html(`
-                                    <div class="flex flex-col items-center justify-center py-12 text-center">
-                                        <div class="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4"></div>
-                                        <p class="text-sm text-gray-600">${message}</p>
-                                    </div>
-                                `);
-            }
-
-            function updateTotals(shippingCost) {
-                const grandTotal = subtotal + shippingCost;
-                $('#shipping_cost_display').text('Rp' + new Intl.NumberFormat('id-ID').format(shippingCost));
-                $('#grand_total_display').text('Rp' + new Intl.NumberFormat('id-ID').format(grandTotal));
+                updateTotals();
             }
 
             $(document).on('change', '.shipping-option', function () {
-                const cost = parseInt($(this).val()) || 0;
-                const code = $(this).data('code');
-                const service = $(this).data('service');
-                const name = $(this).data('name');
-                const etd = $(this).data('etd');
+                const $el = $(this);
+                currentShipping = parseInt($el.val()) || 0;
 
-                $('#selected_courier_code').val(code);
-                $('#selected_courier_service').val(service);
-                $('#selected_shipping_cost').val(cost);
-                $('#selected_shipping_etd').val(etd);
-
-                updateTotals(cost);
-
-                $('#selected_service_label').text(`${name} ${service}`);
-                $('#selected_service_etd').text(`Est. ${etd} hari`);
+                $('#selected_courier_code').val($el.data('code'));
+                $('#selected_courier_service').val($el.data('service'));
+                $('#selected_shipping_cost').val(currentShipping);
+                $('#selected_shipping_etd').val($el.data('etd'));
+                $('#selected_service_label').text(`${$el.data('name')} ${$el.data('service')}`);
+                $('#selected_service_etd').text(`Est. ${$el.data('etd')} hari`);
                 $('#selected_service_info').removeClass('hidden');
-
                 $('#btn-submit').prop('disabled', false);
+
+                updateTotals();
             });
 
+            // ─── COUPON ──────────────────────────────────────────────────────────
 
-            $('#btn-cek-ongkir').prop('disabled', true).html(`
-                                <i class="fa-solid fa-bolt text-emerald-500 mr-2"></i>
-                                <span class="font-bold">INSTANT</span>
-                                <span class="text-xs ml-1">(Auto)</span>
-                            `).addClass('bg-emerald-50 border-emerald-200 text-emerald-700 cursor-default');
+            $(document).on('input', '#coupon_input', function () {
+                $(this).val($(this).val().toUpperCase());
+            });
+
+            $(document).on('click', '#btn-apply-coupon', function () {
+                const code = $('#coupon_input').val().trim();
+                if (!code) return;
+
+                const $btn = $(this).prop('disabled', true).text('Mengecek...');
+
+                $.ajax({
+                    url: "{{ route('checkout.apply-coupon') }}",
+                    method: 'POST',
+                    data: { _token: csrfToken, coupon_code: code },
+                    success: function (res) {
+                        if (!res.success) {
+                            showCouponMessage('error', res.message);
+                            $btn.prop('disabled', false).text('Pakai');
+                            return;
+                        }
+
+                        currentDiscount = res.discount_amount;
+                        $('#coupon_code_input').val(code.toUpperCase());
+                        $('#discount_display').text('-' + formatRupiah(res.discount_amount));
+                        $('#discount-row').show();
+                        $('#coupon-message').addClass('hidden');
+                        updateTotals();
+
+                        $('#coupon-input-box').replaceWith(buildAppliedCouponHTML(code, res));
+                    },
+                    error: function () {
+                        showCouponMessage('error', 'Terjadi kesalahan. Coba lagi.');
+                        $btn.prop('disabled', false).text('Pakai');
+                    },
+                });
+            });
+
+            $(document).on('click', '#btn-remove-coupon', function () {
+                $.post("{{ route('checkout.remove-coupon') }}", { _token: csrfToken }, function () {
+                    currentDiscount = 0;
+                    $('#coupon_code_input').val('');
+                    $('#discount-row').hide();
+                    updateTotals();
+                    $('#coupon-applied-box').replaceWith(buildCouponInputHTML());
+                });
+            });
+
+            // ─── TEMPLATE BUILDERS ───────────────────────────────────────────────
+
+            function buildAppliedCouponHTML(code, res) {
+                return `
+                    <div id="coupon-applied-box"
+                        class="flex items-center justify-between p-4 bg-purple-50 border-2 border-purple-300 rounded-2xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
+                                <i class="fa-solid fa-tag"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-black text-purple-700">${code.toUpperCase()}</p>
+                                <p class="text-xs text-purple-500">${res.coupon_name}</p>
+                                <p class="text-xs font-bold text-green-600 mt-0.5">Hemat ${formatRupiah(res.discount_amount)}</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-remove-coupon"
+                            class="text-xs font-bold text-red-400 hover:text-red-600 transition-colors px-3 py-1 rounded-lg hover:bg-red-50">
+                            <i class="fa-solid fa-xmark mr-1"></i> Hapus
+                        </button>
+                    </div>
+                `;
+            }
+
+            function buildCouponInputHTML() {
+                return `
+                    <div id="coupon-input-box" class="flex gap-3">
+                        <div class="relative flex-1">
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300">
+                                <i class="fa-solid fa-ticket text-sm"></i>
+                            </div>
+                            <input type="text" id="coupon_input" placeholder="Masukkan kode voucher"
+                                autocomplete="off" autocapitalize="characters"
+                                class="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-gray-200 text-sm font-bold
+                                       uppercase tracking-widest focus:outline-none focus:border-purple-400 transition-colors">
+                        </div>
+                        <button type="button" id="btn-apply-coupon"
+                            class="px-5 py-3.5 bg-purple-500 text-white font-black rounded-xl text-sm
+                                   hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap">
+                            Pakai
+                        </button>
+                    </div>
+                    <div id="coupon-message" class="mt-3 hidden"></div>
+                `;
+            }
+
+            // ─── FORM SUBMIT ─────────────────────────────────────────────────────
 
             $('#checkoutForm').on('submit', function (e) {
                 if (!$('#selected_shipping_cost').val()) {
                     e.preventDefault();
-                    showShippingMessage('warning', 'Pilih layanan pengiriman!');
-                    return false;
+                    showShippingMessage('warning', 'Pilih layanan pengiriman terlebih dahulu!');
                 }
             });
 
-            function showShippingMessage(type, message) {
-                const colors = {
-                    error: 'bg-red-50 border-red-200 text-red-700',
-                    warning: 'bg-amber-50 border-amber-200 text-amber-700'
-                };
-                $('#shipping-services').html(`
-                                    <div class="p-6 border-2 rounded-2xl ${colors[type] || 'bg-blue-50 border-blue-200 text-blue-700'} flex items-center gap-3">
-                                        <i class="fa-solid fa-${type === 'error' ? 'xmark-circle' : 'triangle-exclamation'}"></i>
-                                        <p class="text-sm">${message}</p>
-                                    </div>
-                                `);
-            }
         });
     </script>
-@endsection
+@endpush

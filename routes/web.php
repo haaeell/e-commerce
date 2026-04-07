@@ -10,6 +10,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
@@ -113,9 +114,18 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/set-address', 'setAddress')->name('checkout.set-address');
         Route::post('/check-ongkir', 'checkOngkir')->name('checkout.check-ongkir');
         Route::get('/search-destination', 'searchDestination')->name('checkout.search-destination');
+        Route::post('/apply-coupon',     'applyCoupon')->name('checkout.apply-coupon');
+        Route::post('/remove-coupon',    'removeCoupon')->name('checkout.remove-coupon');
+        Route::post('/',    'store')->name('checkout.store');
     });
 
     Route::prefix('addresses')->controller(AddressController::class)->group(function () {
         Route::post('/',         'store')->name('addresses.store');
+    });
+
+    Route::prefix('order-history')->controller(OrderHistoryController::class)->group(function () {
+        Route::get('/', 'index')->name('order.history');
+        Route::get('/{id}', 'show')->name('order.history.show');
+        Route::patch('/{id}/complete', 'markAsCompleted')->name('order.history.complete');
     });
 });

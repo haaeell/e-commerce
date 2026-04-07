@@ -160,7 +160,7 @@
     </section>
 @endsection
 
-@section('scripts')
+@push('scripts')
     <script>
         const variants = @json($product->variants->load('attributes'));
         let selectedChoices = {};
@@ -268,4 +268,4 @@
             }
         });
     </script>
-@endsection
+@endpush

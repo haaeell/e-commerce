@@ -13,6 +13,9 @@
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -75,6 +78,122 @@
 
         .select2-container--default .select2-selection--single .select2-selection__arrow {
             height: 44px;
+        }
+
+        #datatable_wrapper {
+            font-family: 'Poppins', sans-serif;
+            margin-top: 1rem;
+        }
+
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 1rem;
+        }
+
+        /* Search Input - Simple */
+        .dataTables_wrapper .dataTables_filter input {
+            border: 2px solid #e5e7eb !important;
+            border-radius: 1rem !important;
+            padding: 0.75rem 1rem !important;
+            font-size: 0.875rem !important;
+            font-weight: 500 !important;
+            height: 44px !important;
+            background: #f9fafb !important;
+        }
+
+        .dataTables_wrapper .dataTables_filter input:focus {
+            border-color: #81C784 !important;
+            box-shadow: 0 0 0 3px rgba(129, 199, 132, 0.1) !important;
+            outline: none !important;
+        }
+
+        /* Length Menu */
+        .dataTables_wrapper .dataTables_length select {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            font-weight: 500;
+            height: 44px;
+        }
+
+        /* Pagination - Simple */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.5rem 0.75rem !important;
+            margin: 0 0.125rem !important;
+            border-radius: 0.75rem !important;
+            font-weight: 600 !important;
+            font-size: 0.875rem !important;
+            border: 1px solid #e5e7eb !important;
+            background: white !important;
+            color: #6b7280 !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled) {
+            background: #81C784 !important;
+            border-color: #81C784 !important;
+            color: white !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #81C784 !important;
+            border-color: #81C784 !important;
+            color: white !important;
+        }
+
+        /* Table Header */
+        #datatable thead th {
+            background: #f8fafc !important;
+            color: #6b7280 !important;
+            font-weight: 700 !important;
+            font-size: 0.75rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.05em !important;
+            padding: 1.25rem 1rem !important;
+            border: none !important;
+        }
+
+        /* Sorting Icons */
+        table.dataTable thead .sorting::after,
+        table.dataTable thead .sorting_asc::after,
+        table.dataTable thead .sorting_desc::after {
+            font-family: "Font Awesome 6 Free" !important;
+            font-weight: 900;
+            opacity: 0.4;
+            margin-left: 0.5rem;
+        }
+
+        table.dataTable thead .sorting::after {
+            content: "\f0dc";
+        }
+
+        table.dataTable thead .sorting_asc::after {
+            content: "\f0de";
+            color: #81C784;
+        }
+
+        table.dataTable thead .sorting_desc::after {
+            content: "\f0dd";
+            color: #81C784;
+        }
+
+        /* Rows */
+        #datatable tbody tr:hover {
+            background: rgba(129, 199, 132, 0.05) !important;
+        }
+
+        /* Info */
+        .dataTables_wrapper .dataTables_info {
+            color: #9ca3af;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .dataTables_wrapper .dataTables_filter input {
+                width: 100% !important;
+                margin-bottom: 1rem;
+            }
         }
     </style>
     @yield('styles')
@@ -144,7 +263,7 @@
                                 Pengaturan Akun
                             </a>
 
-                            <a href="#"
+                            <a href="/order-history"
                                 class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-brand-dark hover:bg-soft-mint rounded-2xl transition-colors group">
                                 <div
                                     class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-white transition-colors">
@@ -229,10 +348,11 @@
     <div class="h-28 md:hidden"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    @yield('scripts')
+    @stack('scripts')
 
     <script>
         $(document).ready(function () {

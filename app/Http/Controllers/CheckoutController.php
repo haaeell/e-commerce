@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\OrderAddress;
 use App\Models\OrderItem;
+use App\Models\Payment;
+use App\Models\Shipment;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,6 +49,17 @@ class CheckoutController extends Controller
             $total_weight += ($item->product->weight ?? 1000) * $item->qty;
         }
 
+        // Ambil kupon dari session jika ada
+        $appliedCoupon   = null;
+        $discountAmount  = 0;
+
+        if (session('coupon_code')) {
+            $appliedCoupon = Coupon::where('code', session('coupon_code'))->first();
+            if ($appliedCoupon) {
+                $discountAmount = $appliedCoupon->calculateDiscount($total_price);
+            }
+        }
+
         $couriers = self::SUPPORTED_COURIERS;
 
         return view('user.checkout.index', compact(
@@ -52,8 +67,53 @@ class CheckoutController extends Controller
             'total_price',
             'total_weight',
             'address',
-            'couriers'
+            'couriers',
+            'appliedCoupon',   // ← tambah
+            'discountAmount',  // ← tambah
         ));
+    }
+
+    // --- METHOD BARU: Apply Coupon ---
+    public function applyCoupon(Request $request)
+    {
+        $request->validate(['coupon_code' => 'required|string']);
+
+        $user    = Auth::user();
+        $cart    = Cart::with('items.product')->where('user_id', $user->id)->first();
+        $subtotal = $cart
+            ? $cart->items->reduce(fn($carry, $item) => $carry + ($item->price * $item->qty), 0)
+            : 0;
+
+        $coupon = Coupon::where('code', strtoupper(trim($request->coupon_code)))->first();
+
+        if (!$coupon) {
+            return response()->json(['success' => false, 'message' => 'Kode kupon tidak ditemukan.']);
+        }
+
+        $validation = $coupon->validate($subtotal);
+
+        if (!$validation['valid']) {
+            return response()->json(['success' => false, 'message' => $validation['message']]);
+        }
+
+        $discount = $coupon->calculateDiscount($subtotal);
+
+        session(['coupon_code' => $coupon->code]);
+
+        return response()->json([
+            'success'         => true,
+            'message'         => 'Kupon berhasil diterapkan!',
+            'coupon_name'     => $coupon->name,
+            'coupon_type'     => $coupon->type,
+            'coupon_value'    => $coupon->value,
+            'discount_amount' => $discount,
+        ]);
+    }
+
+    public function removeCoupon()
+    {
+        session()->forget('coupon_code');
+        return response()->json(['success' => true]);
     }
 
     public function setAddress(Request $request)
@@ -136,11 +196,12 @@ class CheckoutController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'address_id'      => 'required|exists:addresses,id',
+            'address_id'      => 'required|exists:user_addresses,id',
             'courier_code'    => 'required|string',
             'courier_service' => 'required|string',
             'shipping_cost'   => 'required|integer|min:0',
             'shipping_etd'    => 'nullable|string',
+            'notes'           => 'nullable|string',
         ]);
 
         $user = Auth::user();
@@ -152,35 +213,151 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('error', 'Keranjang belanja kosong.');
         }
 
-        $subtotal    = $cart->items->sum(fn($i) => $i->price * $i->qty);
-        $grandTotal  = $subtotal + $request->shipping_cost;
+        $subtotal = $cart->items->reduce(function ($carry, $item) {
+            return $carry + ($item->price * $item->qty);
+        }, 0);
 
-        DB::transaction(function () use ($request, $user, $cart, $subtotal, $grandTotal) {
+        // Hitung diskon jika ada kupon
+        $discountAmount = 0;
+        $couponId       = null;
+        $coupon         = null;
+
+        if (session('coupon_code')) {
+            $coupon = Coupon::where('code', session('coupon_code'))->first();
+            if ($coupon) {
+                $validation = $coupon->validate($subtotal);
+                if ($validation['valid']) {
+                    $discountAmount = $coupon->calculateDiscount($subtotal);
+                    $couponId       = $coupon->id;
+                }
+            }
+        }
+
+        $grandTotal = $subtotal - $discountAmount + $request->shipping_cost;
+        $orderNumber = 'ORD-' . date('Ymd') . '-' . str_pad(Order::count() + 1, 5, '0', STR_PAD_LEFT);
+
+        $order = DB::transaction(function () use ($request, $user, $cart, $subtotal, $grandTotal, $discountAmount, $couponId, $coupon, $orderNumber) {
+
+            // 1. Buat order
             $order = Order::create([
-                'user_id'          => $user->id,
-                'address_id'       => $request->address_id,
-                'courier_code'     => $request->courier_code,
-                'courier_service'  => $request->courier_service,
-                'shipping_cost'    => $request->shipping_cost,
-                'shipping_etd'     => $request->shipping_etd,
-                'subtotal'         => $subtotal,
-                'grand_total'      => $grandTotal,
-                'status'           => 'pending',
+                'user_id'        => $user->id,
+                'order_number'   => $orderNumber,
+                'subtotal'       => $subtotal,
+                'shipping_cost'  => $request->shipping_cost,
+                'discount'       => $discountAmount,
+                'total'          => $grandTotal,
+                'notes'          => $request->notes,
+                'coupon_id'      => $couponId,
+                'status'         => 'pending',
             ]);
 
+            // 2. Buat order address dari user_addresses
+            $userAddress = UserAddress::find($request->address_id);
+            OrderAddress::create([
+                'order_id'       => $order->id,
+                'type'           => 'shipping',
+                'receiver_name'  => $userAddress->receiver_name ?? $user->name,
+                'phone'          => $userAddress->phone,
+                'address'        => $userAddress->address,
+                'province'       => $userAddress->province,
+                'city'           => $userAddress->city,
+                'district'       => $userAddress->district,
+                'subdistrict'    => $userAddress->subdistrict,
+                'postal_code'    => $userAddress->postal_code,
+            ]);
+
+            // 3. Buat order items dengan snapshot data
             foreach ($cart->items as $item) {
                 OrderItem::create([
-                    'order_id'   => $order->id,
-                    'product_id' => $item->product_id,
-                    'variant_id' => $item->variant_id,
-                    'qty'        => $item->qty,
-                    'price'      => $item->price,
+                    'order_id'      => $order->id,
+                    'product_id'    => $item->product_id,
+                    'variant_id'    => $item->variant_id,
+                    'product_name'  => $item->product->name,
+                    'variant_name'  => $item->variant?->name,
+                    'qty'           => $item->qty,
+                    'price'         => $item->price,
+                    'subtotal'      => $item->price * $item->qty,
                 ]);
             }
 
+            // 4. Buat shipment
+            Shipment::create([
+                'order_id'          => $order->id,
+                'courier'           => $request->courier_code,
+                'service'           => $request->courier_service,
+                'service_code'      => $request->courier_service,
+                'cost'              => $request->shipping_cost,
+                'status'            => 'pending',
+                'estimated_days'    => $request->shipping_etd,
+            ]);
+
+            // 5. Buat payment record
+            Payment::create([
+                'order_id'      => $order->id,
+                'midtrans_order_id' => $orderNumber,
+                'amount'        => $grandTotal,
+                'status'        => 'pending',
+            ]);
+
+            // 7. Update coupon usage
+            if ($coupon) {
+                $coupon->increment('used_count');
+            }
+
+            // 8. Clear cart dan coupon session
+            session()->forget('coupon_code');
             $cart->items()->delete();
         });
 
-        return redirect()->route('orders.index')->with('success', 'Pesanan berhasil dibuat!');
+        return redirect()->route('order.history.show', $order->id)->with('success', 'Pesanan berhasil dibuat! No. Pesanan: ' . $order->order_number);
+    }
+
+    public function validateVoucher(Request $request)
+    {
+        $request->validate(['code' => 'required|string|max:20']);
+
+        $code = strtoupper(trim($request->code));
+        $userId = Auth::id();
+
+        $cart = Cart::with('items')->where('user_id', $userId)->first();
+        if (!$cart || $cart->items->isEmpty()) {
+            return response()->json(['error' => 'Keranjang kosong'], 400);
+        }
+
+        $subtotal = $cart->items->sum(fn($i) => $i->price * $i->qty);
+
+        $coupon = DB::table('coupons')
+            ->where('code', $code)
+            ->where('is_active', true)
+            ->where(function ($q) use ($subtotal) {
+                $q->where('min_purchase', 0)->orWhere('min_purchase', '<=', $subtotal);
+            })
+            ->where(function ($q) {
+                $q->whereNull('quota')->orWhere('quota', '>', DB::table('coupons')->where('code', $code)->value('used_count'));
+            })
+            ->where(function ($q) {
+                $q->whereNull('started_at')->orWhere('started_at', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('expired_at')->orWhere('expired_at', '>=', now());
+            })
+            ->first();
+
+        if (!$coupon) {
+            return response()->json(['error' => 'Voucher tidak valid atau expired'], 400);
+        }
+
+        $discountValue = $coupon->type === 'percent'
+            ? min(($subtotal * $coupon->value / 100), $coupon->max_discount ?? PHP_INT_MAX)
+            : $coupon->value;
+
+        return response()->json([
+            'success' => true,
+            'code' => $coupon->code,
+            'name' => $coupon->name,
+            'type' => $coupon->type,
+            'value' => $discountValue,
+            'formatted_discount' => 'Rp' . number_format($discountValue, 0, ',', '.')
+        ]);
     }
 }

@@ -18,7 +18,7 @@ class OrderController extends Controller
             'items',
             'payment',
             'shipment',
-            'addresses',
+            'address',
         ])->latest()->get();
 
         $filteredOrders = $request->filled('status')
