@@ -101,8 +101,8 @@
                                             class="courier-checkbox peer sr-only">
                                         <div
                                             class="py-3 px-4 border-2 border-gray-100 rounded-2xl text-center
-                                                                                                                            peer-checked:border-brand-primary peer-checked:bg-soft-mint/30
-                                                                                                                            transition-all cursor-pointer select-none">
+                                                                                                                                                                    peer-checked:border-brand-primary peer-checked:bg-soft-mint/30
+                                                                                                                                                                    transition-all cursor-pointer select-none">
                                             <span
                                                 class="text-xs font-black text-gray-400 peer-checked:text-brand-primary uppercase tracking-widest">
                                                 {{ $name }}
@@ -116,7 +116,7 @@
 
                             <button type="button" id="btn-cek-ongkir"
                                 class="w-full py-3 bg-brand-primary text-brand-dark font-black rounded-xl text-sm
-                                                                           hover:-translate-y-0.5 transition-all active:scale-95">
+                                                                                               hover:-translate-y-0.5 transition-all active:scale-95">
                                 <i class="fa-solid fa-magnifying-glass mr-2"></i> Cek Ongkir
                             </button>
 
@@ -200,9 +200,9 @@
                             <button type="submit" id="btn-submit" @if(!$address || !$address->rajaongkir_destination_id)
                             disabled @endif
                                 class="group relative w-full py-4 bg-brand-primary text-brand-dark font-black rounded-2xl
-                                                                           flex items-center justify-center gap-3 overflow-hidden transition-all active:scale-95
-                                                                           shadow-xl hover:shadow-brand-primary/40 hover:-translate-y-1
-                                                                           disabled:bg-gray-600 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none">
+                                                                                               flex items-center justify-center gap-3 overflow-hidden transition-all active:scale-95
+                                                                                               shadow-xl hover:shadow-brand-primary/40 hover:-translate-y-1
+                                                                                               disabled:bg-gray-600 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none">
                                 <span class="relative z-10 uppercase tracking-tighter">Bayar Sekarang</span>
                                 <i
                                     class="fa-solid fa-arrow-right text-xs relative z-10 group-hover:translate-x-1 transition-transform"></i>
@@ -367,8 +367,8 @@
 
                             <button type="submit" id="btn-save-address" disabled
                                 class="w-full py-4 bg-brand-primary text-brand-dark font-black rounded-xl shadow-lg
-                                                                           transition-all active:scale-95
-                                                                           disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100">
+                                                                                               transition-all active:scale-95
+                                                                                               disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100">
                                 <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan & Gunakan Alamat
                             </button>
                         </form>
@@ -388,315 +388,295 @@
             const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
             window.toggleAddressModal = function () {
-                    $('#addressModal').toggleClass('hidden');
-                    $('body').toggleClass('overflow-hidden');
-                };
+                $('#addressModal').toggleClass('hidden');
+                $('body').toggleClass('overflow-hidden');
+            };
 
-                window.switchAddressTab = function (tab) {
-                    if (tab === 'new') {
-                        $('#address-list-section').addClass('hidden');
-                        $('#address-new-section').removeClass('hidden');
-                        $('#tab-new').addClass('border-brand-primary text-brand-primary').removeClass('border-transparent text-gray-400');
-                        $('#tab-list').addClass('border-transparent text-gray-400').removeClass('border-brand-primary text-brand-primary');
-                    } else {
-                        $('#address-new-section').addClass('hidden');
-                        $('#address-list-section').removeClass('hidden');
-                        $('#tab-list').addClass('border-brand-primary text-brand-primary').removeClass('border-transparent text-gray-400');
-                        $('#tab-new').addClass('border-transparent text-gray-400').removeClass('border-brand-primary text-brand-primary');
-                    }
-                };
+            window.switchAddressTab = function (tab) {
+                if (tab === 'new') {
+                    $('#address-list-section').addClass('hidden');
+                    $('#address-new-section').removeClass('hidden');
+                    $('#tab-new').addClass('border-brand-primary text-brand-primary').removeClass('border-transparent text-gray-400');
+                    $('#tab-list').addClass('border-transparent text-gray-400').removeClass('border-brand-primary text-brand-primary');
+                } else {
+                    $('#address-new-section').addClass('hidden');
+                    $('#address-list-section').removeClass('hidden');
+                    $('#tab-list').addClass('border-brand-primary text-brand-primary').removeClass('border-transparent text-gray-400');
+                    $('#tab-new').addClass('border-transparent text-gray-400').removeClass('border-brand-primary text-brand-primary');
+                }
+            };
 
-                let searchTimer;
-
-                $('#destination_search').on('input', function () {
-                    const query = $(this).val().trim();
-                    clearTimeout(searchTimer);
-                    if (query.length < 3) {
-                        $('#destination_results').addClass('hidden').empty();
-                        return;
-                    }
-                    searchTimer = setTimeout(function () {
-                        $('#destination_results').removeClass('hidden').html(
-                            '<div class="px-4 py-3 text-xs text-gray-400 flex items-center gap-2"><i class="fa-solid fa-circle-notch fa-spin"></i> Mencari lokasi...</div>'
-                        );
-                        $.ajax({
-                            url: "{{ route('checkout.search-destination') }}",
-                            method: 'GET',
-                            data: { search: query },
-                            success: function (results) {
-                                const $list = $('#destination_results').empty();
-                                if (!results || results.length === 0) {
-                                    $list.html('<div class="px-4 py-3 text-xs text-gray-400">Lokasi tidak ditemukan. Coba kata kunci lain.</div>');
-                                    return;
-                                }
-                                results.forEach(function (item) {
-                                    $list.append(`
-                                                                    <div class="px-4 py-3 hover:bg-soft-mint/20 cursor-pointer transition-colors"
-                                                                         data-id="${item.id}"
-                                                                         data-province="${item.province_name}"
-                                                                         data-city="${item.city_name}"
-                                                                         data-district="${item.district_name}"
-                                                                         data-subdistrict="${item.subdistrict_name}"
-                                                                         data-zipcode="${item.zip_code}"
-                                                                         data-label="${item.label}">
-                                                                        <p class="font-bold text-brand-dark text-xs">${item.subdistrict_name}, ${item.district_name}</p>
-                                                                        <p class="text-[10px] text-gray-400 mt-0.5">${item.city_name}, ${item.province_name} ${item.zip_code}</p>
-                                                                    </div>
-                                                                `);
-                                });
-                            },
-                            error: function () {
-                                $('#destination_results').html('<div class="px-4 py-3 text-xs text-red-400">Gagal mencari lokasi. Coba lagi.</div>');
-                            }
-                        });
-                    }, 400);
-                });
-
-                $(document).on('click', '#destination_results > div[data-id]', function () {
-                    const id = $(this).data('id');
-                    const province = $(this).data('province');
-                    const city = $(this).data('city');
-                    const district = $(this).data('district');
-                    const subdistrict = $(this).data('subdistrict');
-                    const zipcode = $(this).data('zipcode');
-                    const label = $(this).data('label');
-
-                    $('#dest_id').val(id);
-                    $('#dest_province').val(province);
-                    $('#dest_city').val(city);
-                    $('#dest_district').val(district);
-                    $('#dest_subdistrict').val(subdistrict);
-
-                    if (!$('#new_postal_code').val()) {
-                        $('#new_postal_code').val(zipcode);
-                    }
-
-                    $('#destination_search').val(`${subdistrict}, ${district}, ${city}`);
+            let searchTimer;
+            $('#destination_search').on('input', function () {
+                const query = $(this).val().trim();
+                clearTimeout(searchTimer);
+                if (query.length < 3) {
                     $('#destination_results').addClass('hidden').empty();
-
-                    $('#dest_preview_label').text(label);
-                    $('#dest_preview_detail').text(`Kode Pos: ${zipcode}`);
-                    $('#dest_preview').removeClass('hidden');
-
-                    $('#btn-save-address').prop('disabled', false);
-                });
-
-                $(document).on('click', function (e) {
-                    if (!$(e.target).closest('#destination_search, #destination_results').length) {
-                        $('#destination_results').addClass('hidden');
-                    }
-                });
-
-                $('#btn-cek-ongkir').on('click', function () {
-                    const selectedCouriers = [];
-                    $('.courier-checkbox:checked').each(function () {
-                        selectedCouriers.push($(this).val());
-                    });
-
-                    if (selectedCouriers.length === 0) {
-                        showShippingMessage('warning', 'Pilih minimal satu kurir terlebih dahulu.');
-                        return;
-                    }
-
-                    $('#shipping-services').html(`
-                            <div class="py-8 text-center">
-                                <i class="fa-solid fa-circle-notch fa-spin text-brand-primary text-lg"></i>
-                                <p class="text-xs text-gray-400 mt-2">Mengecek ongkir ke tujuan...</p>
-                            </div>
-                        `);
-
+                    return;
+                }
+                searchTimer = setTimeout(function () {
+                    $('#destination_results').removeClass('hidden').html(
+                        '<div class="px-4 py-3 text-xs text-gray-400 flex items-center gap-2"><i class="fa-solid fa-circle-notch fa-spin"></i> Mencari lokasi...</div>'
+                    );
                     $.ajax({
-                        url: "{{ route('checkout.check-ongkir') }}",
-                        method: 'POST',
-                        data: {
-                            _token: csrfToken,
-                            couriers: selectedCouriers,
-                            weight: totalWeight,
-                        },
-                        success: function (services) {
-                            if (!services || services.length === 0) {
-                                showShippingMessage('error', 'Tidak ada layanan tersedia untuk rute ini.');
+                        url: "{{ route('checkout.search-destination') }}",
+                        method: 'GET',
+                        data: { search: query },
+                        success: function (results) {
+                            const $list = $('#destination_results').empty();
+                            if (!results || results.length === 0) {
+                                $list.html('<div class="px-4 py-3 text-xs text-gray-400">Lokasi tidak ditemukan.</div>');
                                 return;
                             }
-
-                            // **SORTIR OTOMATIS BERDASARKAN HARGA TERMURAH**
-                            services.sort((a, b) => parseInt(a.cost) - parseInt(b.cost));
-
-                            let html = `
-                                    <div class="flex flex-col sm:flex-row gap-2 mb-4 p-3 bg-green-50 border border-green-100 rounded-2xl">
-                                        <div class="flex items-center gap-2 flex-1">
-                                            <i class="fa-solid fa-crown text-yellow-500"></i>
-                                            <p class="text-xs font-bold text-green-700">
-                                                <span id="total-services">${services.length}</span> layanan tersedia
-                                            </p>
-                                        </div>
-                                        <div class="flex items-center gap-1">
-                                            <button type="button" onclick="sortShipping('price-asc')" 
-                                                    class="p-1.5 text-xs bg-white border border-gray-200 rounded-lg hover:bg-green-50 text-green-700 font-bold transition-all">
-                                                <i class="fa-solid fa-arrow-down-wide-short"></i>
-                                            </button>
-                                            <button type="button" onclick="sortShipping('price-desc')" 
-                                                    class="p-1.5 text-xs bg-white border border-gray-200 rounded-lg hover:bg-green-50 text-green-700 font-bold transition-all">
-                                                <i class="fa-solid fa-arrow-up-wide-short"></i>
-                                            </button>
-                                            <button type="button" onclick="sortShipping('etd')" 
-                                                    class="p-1.5 text-xs bg-white border border-gray-200 rounded-lg hover:bg-green-50 text-green-700 font-bold transition-all">
-                                                <i class="fa-solid fa-clock"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                `;
-
-                            services.forEach(function (svc, index) {
-                                const cost = parseInt(svc.cost) || 0;
-                                const isCheapest = index === 0;
-
-                                html += `
-                                        <label class="relative cursor-pointer block ${isCheapest ? 'ring-2 ring-green-200 bg-green-50/50' : ''}">
-                                            <input type="radio" name="shipping_service_radio"
-                                                   value="${cost}"
-                                                   data-code="${svc.code}"
-                                                   data-service="${svc.service}"
-                                                   data-name="${svc.name}"
-                                                   data-etd="${svc.etd}"
-                                                   class="peer sr-only shipping-option" ${isCheapest ? 'checked' : ''} required>
-                                            <div class="p-4 border-2 ${isCheapest ? 'border-green-400 bg-green-50/30 shadow-md' : 'border-gray-100'} rounded-2xl flex justify-between items-center
-                                                        peer-checked:border-brand-primary peer-checked:bg-soft-mint/20
-                                                        transition-all hover:border-gray-200 cursor-pointer group">
-                                                ${isCheapest ? `
-                                                <div class="absolute -top-3 left-4 bg-green-500 text-white px-2 py-1 rounded-full text-[10px] font-bold shadow-lg">
-                                                    TERMURAH
-                                                </div>
-                                                ` : ''}
-                                                <div class="flex-1 min-w-0 relative">
-                                                    <div class="flex items-center gap-2 mb-1">
-                                                        <p class="text-sm font-bold text-brand-dark">${svc.name} 
-                                                            <span class="text-brand-primary">${svc.service}</span>
-                                                        </p>
-                                                        ${isCheapest ? '<i class="fa-solid fa-crown text-yellow-500 text-xs ml-1"></i>' : ''}
-                                                    </div>
-                                                    <p class="text-[10px] text-gray-400">${svc.description} 
-                                                       <span class="font-bold text-green-600">• Est. ${svc.etd} hari</span>
-                                                    </p>
-                                                </div>
-                                                <div class="text-right ml-4 flex-shrink-0">
-                                                    <p class="text-lg ${isCheapest ? 'text-green-600 font-black drop-shadow-sm' : 'text-sm font-black text-brand-primary'}">
-                                                        Rp${new Intl.NumberFormat('id-ID').format(cost)}
-                                                    </p>
-                                                    ${isCheapest ? '<p class="text-[10px] text-green-600 font-bold mt-0.5">Paling murah</p>' : ''}
-                                                </div>
-                                            </div>
-                                        </label>
-                                    `;
+                            results.forEach(function (item) {
+                                $list.append(`
+                                <div class="px-4 py-3 hover:bg-soft-mint/20 cursor-pointer transition-colors"
+                                     data-id="${item.id}" data-province="${item.province_name}"
+                                     data-city="${item.city_name}" data-district="${item.district_name}"
+                                     data-subdistrict="${item.subdistrict_name}" data-zipcode="${item.zip_code}"
+                                     data-label="${item.label}">
+                                    <p class="font-bold text-brand-dark text-xs">${item.subdistrict_name}, ${item.district_name}</p>
+                                    <p class="text-[10px] text-gray-400">${item.city_name}, ${item.province_name} ${item.zip_code}</p>
+                                </div>
+                            `);
                             });
-
-                            $('#shipping-services').html(html);
-
-                            // **AUTO PILIH YANG TERMURAH**
-                            $('.shipping-option:checked').trigger('change');
-                        },
-                        error: function (xhr) {
-                            const msg = xhr.responseJSON?.error ?? 'Gagal memuat ongkir. Pastikan alamat sudah benar.';
-                            showShippingMessage('error', msg);
                         }
                     });
-                });
+                }, 400);
+            });
 
-                $(document).on('change', '.shipping-option', function () {
-                    const cost = parseInt($(this).val()) || 0;
-                    const code = $(this).data('code');
-                    const service = $(this).data('service');
-                    const name = $(this).data('name');
-                    const etd = $(this).data('etd');
+            $(document).on('click', '#destination_results > div[data-id]', function () {
+                const id = $(this).data('id');
+                const province = $(this).data('province');
+                const city = $(this).data('city');
+                const district = $(this).data('district');
+                const subdistrict = $(this).data('subdistrict');
+                const zipcode = $(this).data('zipcode');
 
-                    $('#selected_courier_code').val(code);
-                    $('#selected_courier_service').val(service);
-                    $('#selected_shipping_cost').val(cost);
-                    $('#selected_shipping_etd').val(etd);
+                $('#dest_id').val(id);
+                $('#dest_province').val(province);
+                $('#dest_city').val(city);
+                $('#dest_district').val(district);
+                $('#dest_subdistrict').val(subdistrict);
+                $('#new_postal_code').val(zipcode);
 
-                    const grandTotal = subtotal + cost;
-                    $('#shipping_cost_display').text('Rp' + new Intl.NumberFormat('id-ID').format(cost));
-                    $('#grand_total_display').text('Rp' + new Intl.NumberFormat('id-ID').format(grandTotal));
+                $('#destination_search').val(`${subdistrict}, ${district}`);
+                $('#destination_results').addClass('hidden').empty();
 
-                    $('#selected_service_label').text(`${name} ${service}`);
-                    $('#selected_service_etd').text(`Est. ${etd} hari`);
-                    $('#selected_service_info').removeClass('hidden');
+                $('#dest_preview_label').text('Lokasi valid');
+                $('#dest_preview_detail').text(`Kode Pos: ${zipcode}`);
+                $('#dest_preview').removeClass('hidden');
+                $('#btn-save-address').prop('disabled', false);
+            });
 
-                    // **CHECK APAKAH INI YANG TERMURAH**
-                    const allCosts = $('.shipping-option').map(function () {
-                        return parseInt($(this).val()) || 999999999;
-                    }).get();
-                    const minCost = Math.min(...allCosts);
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('#destination_search, #destination_results').length) {
+                    $('#destination_results').addClass('hidden');
+                }
+            });
 
-                    if (cost === minCost) {
-                        $('#cheapest-shipping-highlight').removeClass('hidden');
-                    } else {
-                        $('#cheapest-shipping-highlight').addClass('hidden');
+
+            let isCheckingOngkir = false;
+            let currentServices = [];
+
+            $('.courier-checkbox').on('change', function () {
+                const selectedCouriers = $('.courier-checkbox:checked').map(function () {
+                    return $(this).val();
+                }).get();
+
+                if (selectedCouriers.length > 0) {
+                    instantCheckOngkir(selectedCouriers);
+                } else {
+                    resetShippingDisplay();
+                }
+            });
+
+            function instantCheckOngkir(couriers) {
+                if (isCheckingOngkir) return;
+
+                isCheckingOngkir = true;
+                showLoading('Mengecek ongkir secara instan...');
+
+                $.ajax({
+                    url: "{{ route('checkout.check-ongkir') }}",
+                    method: 'POST',
+                    data: {
+                        _token: csrfToken,
+                        couriers: couriers,
+                        weight: totalWeight,
+                    },
+                    success: function (services) {
+                        currentServices = services;
+                        displayServices(services);
+                        isCheckingOngkir = false;
+                    },
+                    error: function () {
+                        showShippingMessage('error', 'Gagal cek ongkir. Coba lagi.');
+                        isCheckingOngkir = false;
                     }
                 });
+            }
 
-                $('#checkoutForm').on('submit', function (e) {
-                    if (!$('#selected_shipping_cost').val()) {
-                        e.preventDefault();
-                        $('html, body').animate({ scrollTop: $('#shipping-services').offset().top - 100 }, 400);
-                        showShippingMessage('warning', 'Silakan pilih layanan pengiriman terlebih dahulu.');
-                    }
-                });
-
-                function showShippingMessage(type, message) {
-                    const colors = {
-                        error: 'text-red-500 bg-red-50 border-red-100',
-                        warning: 'text-amber-600 bg-amber-50 border-amber-100',
-                        info: 'text-blue-500 bg-blue-50 border-blue-100',
-                    };
-                    const icons = {
-                        error: 'fa-circle-exclamation',
-                        warning: 'fa-triangle-exclamation',
-                        info: 'fa-circle-info',
-                    };
-                    $('#shipping-services').html(`
-                                                    <div class="flex items-center gap-3 p-4 border rounded-2xl ${colors[type] || colors.info}">
-                                                        <i class="fa-solid ${icons[type] || icons.info}"></i>
-                                                        <p class="text-xs font-medium">${message}</p>
-                                                    </div>
-                                                `);
+            function displayServices(services) {
+                if (!services || services.length === 0) {
+                    showShippingMessage('error', 'Tidak ada layanan untuk kurir ini.');
+                    return;
                 }
 
-                window.sortShipping = function (type) {
-                    const services = [];
-                    $('.shipping-option').each(function () {
-                        const $input = $(this);
-                        services.push({
-                            cost: parseInt($input.val()) || 0,
-                            code: $input.data('code'),
-                            service: $input.data('service'),
-                            name: $input.data('name'),
-                            etd: $input.data('etd'),
-                            element: $input.closest('label')
-                        });
-                    });
+                // **AUTO SORT TERMURAH**
+                services.sort((a, b) => parseInt(a.cost) - parseInt(b.cost));
 
-                    // Sort berdasarkan tipe
-                    if (type === 'price-asc') {
-                        services.sort((a, b) => a.cost - b.cost);
-                    } else if (type === 'price-desc') {
-                        services.sort((a, b) => b.cost - a.cost);
-                    } else if (type === 'etd') {
-                        services.sort((a, b) => parseInt(a.etd) - parseInt(b.etd));
-                    }
+                let html = `
+                            <div class="flex items-center justify-between mb-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-bolt text-emerald-500"></i>
+                                    <p class="text-xs font-bold text-emerald-700">
+                                        <span id="instant-total">${services.length}</span> ongkir tersedia 
+                                        <span class="text-emerald-600">(mulai Rp${new Intl.NumberFormat('id-ID').format(services[0].cost)})</span>
+                                    </p>
+                                </div>
+                                <div class="flex gap-1">
+                                    <button type="button" onclick="sortInstant('price')" class="p-1 text-xs bg-white rounded-full shadow-sm hover:bg-emerald-50">
+                                        💰
+                                    </button>
+                                    <button type="button" onclick="sortInstant('etd')" class="p-1 text-xs bg-white rounded-full shadow-sm hover:bg-emerald-50">
+                                        ⏱️
+                                    </button>
+                                </div>
+                            </div>
+                        `;
 
-                    // Update tampilan
-                    const $container = $('#shipping-services');
-                    services.forEach((svc, index) => {
-                        const isCheapest = index === 0;
-                        svc.element.toggleClass('ring-2 ring-green-200 bg-green-50/50', isCheapest);
-                        svc.element.find('.border-2').toggleClass('border-green-400 bg-green-50/30 shadow-md', isCheapest);
-                        svc.element.find('.absolute').toggle(isCheapest);
-                        svc.element.find('.text-lg').toggleClass('text-green-600 font-black drop-shadow-sm', isCheapest);
-                    });
+                services.forEach(function (svc, index) {
+                    const cost = parseInt(svc.cost);
+                    const isCheapest = index === 0;
 
-                    $('#total-services').text(services.length + ' layanan tersedia');
-                };
+                    html += `
+                                <label class="instant-shipping-option block cursor-pointer transition-all hover:scale-[1.02]">
+                                    <input type="radio" name="shipping_service_radio" value="${cost}"
+                                           data-code="${svc.code}" data-service="${svc.service}" 
+                                           data-name="${svc.name}" data-etd="${svc.etd}"
+                                           class="peer sr-only shipping-option ${isCheapest ? 'checked' : ''}">
+                                    <div class="group relative p-4 border-2 rounded-2xl flex justify-between items-center
+                                                ${isCheapest ? 'border-emerald-400 bg-emerald-50/50 shadow-lg ring-2 ring-emerald-200/50' : 'border-gray-100 hover:border-gray-200'}
+                                                peer-checked:border-brand-primary peer-checked:bg-soft-mint/30">
+
+                                        ${isCheapest ? `
+                                        <div class="absolute -top-2 -right-2 bg-emerald-500 text-white px-2 py-1 rounded-full text-[9px] font-bold shadow-lg animate-pulse">
+                                            💰 TERMUDAH
+                                        </div>
+                                        ` : ''}
+
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <span class="text-sm font-bold text-brand-dark">${svc.name}</span>
+                                                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">${svc.service}</span>
+                                            </div>
+                                            <p class="text-[10px] text-gray-500">${svc.description}</p>
+                                            <p class="text-[10px] font-medium text-emerald-600 mt-1">Est. ${svc.etd} hari</p>
+                                        </div>
+
+                                        <div class="text-right ml-3">
+                                            <p class="text-lg font-black ${isCheapest ? 'text-emerald-600 drop-shadow-sm' : 'text-brand-primary'}">
+                                                Rp${new Intl.NumberFormat('id-ID').format(cost)}
+                                            </p>
+                                            ${isCheapest ? '<p class="text-[9px] text-emerald-600 font-bold mt-0.5">Paling murah!</p>' : ''}
+                                        </div>
+                                    </div>
+                                </label>
+                            `;
+                });
+
+                $('#shipping-services').html(html);
+                $('.shipping-option:checked').trigger('change');
+            }
+
+            function resetShippingDisplay() {
+                $('#shipping-services').html(`
+                            <div class="text-center py-8">
+                                <i class="fa-solid fa-truck text-gray-300 text-3xl mb-3"></i>
+                                <p class="text-sm text-gray-500 mb-2">Pilih kurir untuk melihat ongkir secara instan</p>
+                                <p class="text-xs text-gray-400">Klik kurir di atas → ongkir muncul otomatis ✨</p>
+                            </div>
+                        `);
+                $('#selected_shipping_cost').val('');
+                updateTotals(0);
+                $('#selected_service_info').addClass('hidden');
+            }
+
+            function showLoading(message) {
+                $('#shipping-services').html(`
+                            <div class="flex flex-col items-center justify-center py-12 text-center">
+                                <div class="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4"></div>
+                                <p class="text-sm text-gray-600">${message}</p>
+                            </div>
+                        `);
+            }
+
+            function updateTotals(shippingCost) {
+                const grandTotal = subtotal + shippingCost;
+                $('#shipping_cost_display').text('Rp' + new Intl.NumberFormat('id-ID').format(shippingCost));
+                $('#grand_total_display').text('Rp' + new Intl.NumberFormat('id-ID').format(grandTotal));
+            }
+
+            $(document).on('change', '.shipping-option', function () {
+                const cost = parseInt($(this).val()) || 0;
+                const code = $(this).data('code');
+                const service = $(this).data('service');
+                const name = $(this).data('name');
+                const etd = $(this).data('etd');
+
+                $('#selected_courier_code').val(code);
+                $('#selected_courier_service').val(service);
+                $('#selected_shipping_cost').val(cost);
+                $('#selected_shipping_etd').val(etd);
+
+                updateTotals(cost);
+
+                $('#selected_service_label').text(`${name} ${service}`);
+                $('#selected_service_etd').text(`Est. ${etd} hari`);
+                $('#selected_service_info').removeClass('hidden');
+
+                $('#btn-submit').prop('disabled', false);
             });
-        </script>
+
+            window.sortInstant = function (type) {
+                if (currentServices.length === 0) return;
+
+                if (type === 'price') {
+                    currentServices.sort((a, b) => parseInt(a.cost) - parseInt(b.cost));
+                } else if (type === 'etd') {
+                    currentServices.sort((a, b) => parseInt(a.etd) - parseInt(b.etd));
+                }
+
+                displayServices(currentServices);
+            };
+
+            $('#btn-cek-ongkir').prop('disabled', true).html(`
+                        <i class="fa-solid fa-bolt text-emerald-500 mr-2"></i>
+                        <span class="font-bold">INSTANT</span>
+                        <span class="text-xs ml-1">(Auto)</span>
+                    `).addClass('bg-emerald-50 border-emerald-200 text-emerald-700 cursor-default');
+
+            $('#checkoutForm').on('submit', function (e) {
+                if (!$('#selected_shipping_cost').val()) {
+                    e.preventDefault();
+                    showShippingMessage('warning', 'Pilih layanan pengiriman!');
+                    return false;
+                }
+            });
+
+            function showShippingMessage(type, message) {
+                const colors = {
+                    error: 'bg-red-50 border-red-200 text-red-700',
+                    warning: 'bg-amber-50 border-amber-200 text-amber-700'
+                };
+                $('#shipping-services').html(`
+                            <div class="p-6 border-2 rounded-2xl ${colors[type] || 'bg-blue-50 border-blue-200 text-blue-700'} flex items-center gap-3">
+                                <i class="fa-solid fa-${type === 'error' ? 'xmark-circle' : 'triangle-exclamation'}"></i>
+                                <p class="text-sm">${message}</p>
+                            </div>
+                        `);
+            }
+        });
+    </script>
 @endsection
