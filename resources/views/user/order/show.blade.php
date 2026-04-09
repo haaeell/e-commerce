@@ -76,7 +76,7 @@
                                     <div class="relative z-10 flex flex-col items-center">
                                         <div
                                             class="w-10 h-10 rounded-full flex items-center justify-center border-4 border-white shadow-sm transition-all 
-                                                                    {{ $currentIndex >= $index ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-400' }}">
+                                                                                            {{ $currentIndex >= $index ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-400' }}">
                                             <i class="fa-solid {{ $statusMap[$step]['icon'] }} text-[10px]"></i>
                                         </div>
                                         <span
@@ -244,7 +244,7 @@
                                     <div
                                         class="mt-4 pt-4 border-t border-white/10 flex justify-between items-center text-[10px]">
                                         <span class="text-white/40 uppercase tracking-widest font-bold">Estimasi
-                                            Pengemasan</span>
+                                            Pengemasan </span>
                                         <span class="text-indigo-300 font-bold">1-2 Hari Kerja</span>
                                     </div>
                                 </div>
@@ -259,6 +259,8 @@
                             @endif
                         </div>
                     </div>
+
+
 
                     {{-- ALAMAT CARD --}}
                     <div class="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100">
