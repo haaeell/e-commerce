@@ -162,7 +162,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->restrictOnDelete();
             $table->string('order_number')->unique();   // ORD-20240101-XXXXX
-            $table->string('coupon_code')->unique();
+            $table->string('coupon_code')->nullable()->unique();
             $table->enum('status', [
                 'pending',
                 'confirmed',
