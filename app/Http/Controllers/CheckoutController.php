@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class CheckoutController extends Controller
 {
@@ -193,6 +195,14 @@ class CheckoutController extends Controller
         return response()->json($response->json()['data'] ?? []);
     }
 
+    protected function initMidtrans()
+    {
+        Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+        Config::$isProduction = env('MIDTRANS_IS_PRODUCTION');
+        Config::$isSanitized = env('MIDTRANS_IS_SANITIZED');
+        Config::$is3ds = env('MIDTRANS_IS_3DS');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -217,7 +227,6 @@ class CheckoutController extends Controller
             return $carry + ($item->price * $item->qty);
         }, 0);
 
-        // Hitung diskon jika ada kupon
         $discountAmount = 0;
         $couponId       = null;
         $coupon         = null;
@@ -238,7 +247,6 @@ class CheckoutController extends Controller
 
         $order = DB::transaction(function () use ($request, $user, $cart, $subtotal, $grandTotal, $discountAmount, $couponId, $coupon, $orderNumber) {
 
-            // 1. Buat order
             $order = Order::create([
                 'user_id'        => $user->id,
                 'order_number'   => $orderNumber,
@@ -251,7 +259,6 @@ class CheckoutController extends Controller
                 'status'         => 'pending',
             ]);
 
-            // 2. Buat order address dari user_addresses
             $userAddress = UserAddress::find($request->address_id);
             OrderAddress::create([
                 'order_id'       => $order->id,
@@ -266,7 +273,6 @@ class CheckoutController extends Controller
                 'postal_code'    => $userAddress->postal_code,
             ]);
 
-            // 3. Buat order items dengan snapshot data
             foreach ($cart->items as $item) {
                 OrderItem::create([
                     'order_id'      => $order->id,
@@ -280,7 +286,6 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            // 4. Buat shipment
             Shipment::create([
                 'order_id'          => $order->id,
                 'courier'           => $request->courier_code,
@@ -291,22 +296,51 @@ class CheckoutController extends Controller
                 'estimated_days'    => $request->shipping_etd,
             ]);
 
-            // 5. Buat payment record
-            Payment::create([
-                'order_id'      => $order->id,
-                'midtrans_order_id' => $orderNumber,
-                'amount'        => $grandTotal,
-                'status'        => 'pending',
-            ]);
+            $this->initMidtrans();
 
-            // 7. Update coupon usage
-            if ($coupon) {
-                $coupon->increment('used_count');
+            $params = [
+                'transaction_details' => [
+                    'order_id' => $orderNumber,
+                    'gross_amount' => (int) $grandTotal,
+                ],
+                'customer_details' => [
+                    'first_name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $request->phone ?? $user->phone,
+                ],
+                'item_details' => $cart->items->map(function ($item) {
+                    return [
+                        'id' => $item->product_id,
+                        'price' => (int) $item->price,
+                        'quantity' => $item->qty,
+                        'name' => substr($item->product->name, 0, 50)
+                    ];
+                })->toArray()
+            ];
+
+            if ($request->shipping_cost > 0) {
+                $params['item_details'][] = [
+                    'id' => 'SHIPPING',
+                    'price' => (int) $request->shipping_cost,
+                    'quantity' => 1,
+                    'name' => 'Ongkos Kirim'
+                ];
             }
 
-            // 8. Clear cart dan coupon session
-            session()->forget('coupon_code');
+            $snapToken = Snap::getSnapToken($params);
+
+            $order->update(['snap_token' => $snapToken]);
+
+            Payment::create([
+                'order_id' => $order->id,
+                'midtrans_order_id' => $orderNumber,
+                'amount' => $grandTotal,
+                'status' => 'pending',
+                'snap_token' => $snapToken
+            ]);
+
             $cart->items()->delete();
+            session()->forget('coupon_code');
         });
 
         return redirect()->route('order.history.show', $order->id)->with('success', 'Pesanan berhasil dibuat! No. Pesanan: ' . $order->order_number);
