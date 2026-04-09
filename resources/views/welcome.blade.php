@@ -132,7 +132,7 @@
             </div>
 
             <div class="mt-16 text-center">
-                <a href="#"
+                <a href="/collections"
                     class="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-brand-dark font-bold rounded-xl border-2 border-brand-dark hover:bg-brand-dark hover:text-white transition-all active:scale-95 group">
                     Lihat Koleksi Lengkap
                     <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>

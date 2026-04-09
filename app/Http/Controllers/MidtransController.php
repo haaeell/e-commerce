@@ -12,7 +12,8 @@ class MidtransController extends Controller
     public function callback(Request $request)
     {
         Log::info('Midtrans Callback Masuk!', $request->all());
-        $serverKey = env('MIDTRANS_SERVER_KEY');
+
+        $serverKey = config('services.midtrans.server_key');
         $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
 
         if ($hashed !== $request->signature_key) {
@@ -22,10 +23,17 @@ class MidtransController extends Controller
         $order = Order::where('order_number', $request->order_id)->first();
         if (!$order) return response()->json(['message' => 'Order not found'], 404);
 
-        $transactionStatus = $request->transaction_status;
         $payment = Payment::where('midtrans_order_id', $request->order_id)->first();
+        if (!$payment) return response()->json(['message' => 'Payment not found'], 404);
 
-        if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
+        $transactionStatus = $request->transaction_status;
+        $fraudStatus = $request->fraud_status;
+
+        if (
+            $transactionStatus == 'settlement' ||
+            ($transactionStatus == 'capture' && $fraudStatus == 'accept')
+        ) {
+
             if ($order->status !== 'processing') {
                 foreach ($order->items as $item) {
                     if ($item->variant_id) {
@@ -42,6 +50,9 @@ class MidtransController extends Controller
                 'paid_at' => now(),
                 'payment_method' => $request->payment_type
             ]);
+        } elseif (in_array($transactionStatus, ['cancel', 'expire', 'deny'])) {
+            $order->update(['status' => 'cancelled']);
+            $payment->update(['status' => 'failed']);
         }
 
         return response()->json(['message' => 'Success']);

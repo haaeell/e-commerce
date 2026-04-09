@@ -150,9 +150,9 @@ class CheckoutController extends Controller
         }
 
         $response = Http::withHeaders([
-            'key' => env('RAJAONGKIR_API_KEY'),
+            'key' => config('services.rajaongkir.api_key'),
         ])->asForm()->post('https://rajaongkir.komerce.id/api/v1/calculate/domestic-cost', [
-            'origin'      => env('RAJAONGKIR_ORIGIN'),
+            'origin'      => config('services.rajaongkir.origin'),
             'destination' => $address->rajaongkir_destination_id,
             'weight'      => max(1, (int) $request->weight),
             'courier'     => implode(':', $request->couriers),
@@ -181,7 +181,7 @@ class CheckoutController extends Controller
         $request->validate(['search' => 'required|string|min:3']);
 
         $response = Http::withHeaders([
-            'key' => env('RAJAONGKIR_API_KEY'),
+            'key' => config('services.rajaongkir.api_key'),
         ])->get('https://rajaongkir.komerce.id/api/v1/destination/domestic-destination', [
             'search' => $request->search,
             'limit'  => 10,
@@ -197,10 +197,10 @@ class CheckoutController extends Controller
 
     protected function initMidtrans()
     {
-        Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        Config::$isProduction = env('MIDTRANS_IS_PRODUCTION');
-        Config::$isSanitized = env('MIDTRANS_IS_SANITIZED');
-        Config::$is3ds = env('MIDTRANS_IS_3DS');
+        Config::$serverKey = config('services.midtrans.server_key');
+        Config::$isProduction = config('services.midtrans.is_production');
+        Config::$isSanitized = config('services.midtrans.is_sanitized');
+        Config::$is3ds = config('services.midtrans.is_3ds');
     }
 
     public function store(Request $request)
@@ -341,6 +341,8 @@ class CheckoutController extends Controller
 
             $cart->items()->delete();
             session()->forget('coupon_code');
+
+            return $order;
         });
 
         return redirect()->route('order.history.show', $order->id)->with('success', 'Pesanan berhasil dibuat! No. Pesanan: ' . $order->order_number);
@@ -392,6 +394,15 @@ class CheckoutController extends Controller
             'type' => $coupon->type,
             'value' => $discountValue,
             'formatted_discount' => 'Rp' . number_format($discountValue, 0, ',', '.')
+        ]);
+    }
+
+    public function checkPaymentStatus(Order $order)
+    {
+        $payment = Payment::where('order_id', $order->id)->first();
+        return response()->json([
+            'status' => $payment->status,
+            'order_status' => $order->status
         ]);
     }
 }

@@ -76,7 +76,7 @@
                         <div class="flex flex-col items-center gap-2 z-10">
                             <div
                                 class="w-10 h-10 rounded-full flex items-center justify-center text-sm transition-all
-                                                                            {{ $done ? 'bg-brand-primary text-white shadow-md shadow-brand-primary/30' : 'bg-white border-2 border-gray-200 text-gray-300' }}">
+                                                                                        {{ $done ? 'bg-brand-primary text-white shadow-md shadow-brand-primary/30' : 'bg-white border-2 border-gray-200 text-gray-300' }}">
                                 <i class="fa-solid {{ $stepCfg[$step]['icon'] }} text-[13px]"></i>
                             </div>
                             <span
@@ -191,7 +191,7 @@
                                 @php $p = $order->payment; @endphp
                                 <span
                                     class="ml-auto px-3 py-1 rounded-full text-[10px] font-black tracking-wider
-                                                                        {{ $p->status === 'success' ? 'bg-green-50 text-green-600' :
+                                                                                    {{ $p->status === 'success' ? 'bg-green-50 text-green-600' :
                     ($p->status === 'pending' ? 'bg-amber-50 text-amber-600' :
                         ($p->status === 'failed' ? 'bg-red-50 text-red-600' :
                             ($p->status === 'expired' ? 'bg-gray-100 text-gray-500' : 'bg-purple-50 text-purple-600'))) }}">

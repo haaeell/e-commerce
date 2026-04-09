@@ -86,7 +86,7 @@ class OrderHistoryController extends Controller
 
         try {
             $response = \Illuminate\Support\Facades\Http::withHeaders([
-                'key' => env('RAJAONGKIR_API_KEY'),
+                'key' => config('services.rajaongkir.api_key'),
             ])->asForm()->post('https://rajaongkir.komerce.id/api/v1/waybill/domestic-waybill', [
                 'waybill' => $waybill,
                 'courier' => $courier,

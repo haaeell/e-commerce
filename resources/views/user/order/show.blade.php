@@ -16,8 +16,7 @@
                 ];
                 $currentStatus = $statusMap[$order->status] ?? $statusMap['pending'];
 
-                // Ambil data payment terbaru
-                $payment = $order->payment; // Asumsi relasi hasOne/belongsTo ke Payment
+                $payment = $order->payment;
             @endphp
 
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
@@ -76,7 +75,7 @@
                                     <div class="relative z-10 flex flex-col items-center">
                                         <div
                                             class="w-10 h-10 rounded-full flex items-center justify-center border-4 border-white shadow-sm transition-all 
-                                                                                            {{ $currentIndex >= $index ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-400' }}">
+                                                                                                                                                                                                                    {{ $currentIndex >= $index ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-400' }}">
                                             <i class="fa-solid {{ $statusMap[$step]['icon'] }} text-[10px]"></i>
                                         </div>
                                         <span
@@ -226,7 +225,9 @@
                         <div class="relative z-10">
                             @if($order->status == 'pending')
                                 {{-- Tombol Bayar (Sudah ada di kode sebelumnya) --}}
-                                <button id="pay-button" ...> BAYAR SEKARANG </button>
+                                <button id="pay-button"
+                                    class="w-full py-4 bg-brand-primary text-white font-bold rounded-2xl shadow-lg hover:shadow-brand-primary/30 transition-all mt-4 flex items-center justify-center gap-2">
+                                    BAYAR SEKARANG </button>
 
                             @elseif($order->status == 'processing')
                                 {{-- TAMPILAN PROCESSING --}}
@@ -297,25 +298,76 @@
 
 @push('scripts')
     @if($order->status == 'pending' && $payment && $payment->snap_token)
-        {{-- Load Snap JS --}}
-        <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+        <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key="{{ config('services.midtrans.client_key') }}"></script>
         <script type="text/javascript">
+            let pollingInterval = null;
+
+            function startPolling() {
+                if (pollingInterval) return;
+                pollingInterval = setInterval(async () => {
+                    try {
+                        const res = await fetch('/order/{{ $order->id }}/payment-status');
+                        const data = await res.json();
+
+                        if (data.status === 'success') {
+                            stopPolling();
+                            window.snap.hide();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Pembayaran Berhasil!',
+                                text: 'Pesanan kamu sedang diproses.',
+                                timer: 2000,
+                                timerProgressBar: true,
+                                showConfirmButton: false,
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        }
+                    } catch (e) {
+                        console.error('Polling error:', e);
+                    }
+                }, 3000);
+            }
+
+            function stopPolling() {
+                if (pollingInterval) {
+                    clearInterval(pollingInterval);
+                    pollingInterval = null;
+                }
+            }
+
             const payButton = document.getElementById('pay-button');
             payButton.addEventListener('click', function () {
                 window.snap.pay('{{ $payment->snap_token }}', {
                     onSuccess: function (result) {
-                        window.location.reload();
+                        stopPolling();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Pembayaran Berhasil!',
+                            text: 'Pesanan kamu sedang diproses.',
+                            confirmButtonText: 'Lihat Pesanan'
+                        }).then(() => {
+                            window.location.reload();
+                        });
                     },
                     onPending: function (result) {
-                        window.location.reload();
+                        startPolling();
                     },
                     onError: function (result) {
-                        alert("Pembayaran gagal, silakan coba lagi.");
+                        stopPolling();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Pembayaran Gagal',
+                            text: 'Terjadi kesalahan, silakan coba lagi.',
+                            confirmButtonText: 'Coba Lagi'
+                        });
                     },
                     onClose: function () {
-                        // Opsional: tampilkan toast atau pesan
+                        startPolling();
                     }
                 });
+                setTimeout(() => startPolling(), 2000);
             });
         </script>
     @endif

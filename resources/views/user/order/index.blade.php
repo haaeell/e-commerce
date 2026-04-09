@@ -28,8 +28,7 @@
                         ];
                     @endphp
                     @foreach($tabs as $key => $label)
-                        <button
-                            class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300"
+                        <button class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300"
                             data-status="{{ $key }}">
                             {{ $label }}
                         </button>
@@ -54,7 +53,6 @@
                             @php
                                 $statusMap = [
                                     'pending' => ['bg' => 'bg-amber-50', 'text' => 'text-amber-600', 'label' => 'Pending'],
-                                    'confirmed' => ['bg' => 'bg-blue-50', 'text' => 'text-blue-600', 'label' => 'Dikonfirmasi'],
                                     'processing' => ['bg' => 'bg-indigo-50', 'text' => 'text-indigo-600', 'label' => 'Diproses'],
                                     'shipped' => ['bg' => 'bg-cyan-50', 'text' => 'text-cyan-600', 'label' => 'Dikirim'],
                                     'delivered' => ['bg' => 'bg-green-50', 'text' => 'text-green-600', 'label' => 'Selesai'],
@@ -66,7 +64,8 @@
                                 <td class="py-6 px-2">
                                     <p class="text-sm font-black text-brand-dark">#{{ $order->order_number }}</p>
                                     <p class="text-[10px] text-gray-400 font-medium">
-                                        {{ $order->created_at->format('d M Y, H:i') }}</p>
+                                        {{ $order->created_at->format('d M Y, H:i') }}
+                                    </p>
                                 </td>
                                 <td class="py-6">
                                     <div class="flex items-center gap-3">

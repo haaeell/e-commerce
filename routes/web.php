@@ -26,6 +26,9 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/collections', [LandingPageController::class, 'collections'])->name('collections.index');
 Route::get('/collections/{slug}', [LandingPageController::class, 'show'])->name('collections.show');
 
+Route::post('/midtrans/callback', [App\Http\Controllers\MidtransController::class, 'callback']);
+Route::get('/order/{order}/payment-status', [CheckoutController::class, 'checkPaymentStatus'])->middleware('auth');
+
 Route::middleware(['auth'])->group(function () {
 
     // Categories
