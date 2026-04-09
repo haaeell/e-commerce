@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,6 +34,7 @@ class OrderHistoryController extends Controller
             'items.product.category',
             'items.product.images',
             'items.variant.attributes',
+            'items.review', // tambah ini
             'address',
             'shipment',
             'payment'
@@ -108,5 +110,34 @@ class OrderHistoryController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Pesanan selesai');
+    }
+
+    public function submitReview(Request $request, Order $order)
+    {
+        abort_if($order->user_id !== Auth::id(), 403);
+        abort_if($order->status !== 'delivered', 403);
+
+        $request->validate([
+            'order_item_id' => 'required|exists:order_items,id',
+            'rating'        => 'required|integer|min:1|max:5',
+            'comment'       => 'nullable|string|max:500',
+        ]);
+
+        $item = $order->items()->findOrFail($request->order_item_id);
+
+        if (Review::where('order_item_id', $item->id)->exists()) {
+            return response()->json(['message' => 'Sudah pernah direview'], 422);
+        }
+
+        Review::create([
+            'user_id'       => Auth::id(),
+            'product_id'    => $item->product_id,
+            'order_item_id' => $item->id,
+            'rating'        => $request->rating,
+            'comment'       => $request->comment,
+            'is_verified'   => true,
+        ]);
+
+        return response()->json(['message' => 'Review berhasil dikirim']);
     }
 }

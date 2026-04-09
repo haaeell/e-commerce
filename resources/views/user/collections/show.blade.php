@@ -145,6 +145,71 @@
                 </div>
             </div>
 
+            {{-- Section Review --}}
+            <div class="mt-16">
+                <div class="flex items-center gap-4 mb-8">
+                    <h2 class="text-2xl font-extrabold text-brand-dark">Ulasan <span
+                            class="text-brand-primary">Pembeli</span></h2>
+                    <span class="text-sm font-bold text-gray-400">({{ $totalReviews }} ulasan)</span>
+                </div>
+
+                {{-- Rating Summary --}}
+                @if($totalReviews > 0)
+                    <div class="flex items-center gap-4 mb-8 p-6 bg-soft-mint/30 rounded-2xl border border-brand-primary/10">
+                        <div class="text-center">
+                            <div class="text-5xl font-black text-brand-dark">{{ number_format($averageRating, 1) }}</div>
+                            <div class="flex justify-center gap-1 mt-1">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i
+                                        class="fa-star text-sm {{ $i <= round($averageRating) ? 'fa-solid text-yellow-400' : 'fa-regular text-gray-300' }}"></i>
+                                @endfor
+                            </div>
+                            <div class="text-xs text-gray-400 mt-1">dari 5</div>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- List Review --}}
+                @forelse($product->reviews as $review)
+                    <div class="py-6 border-b border-gray-100 last:border-0">
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center flex-shrink-0">
+                                <span
+                                    class="text-brand-primary font-bold text-sm">{{ strtoupper(substr($review->user->name, 0, 1)) }}</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <p class="font-bold text-brand-dark text-sm">{{ $review->user->name }}</p>
+                                    <span class="text-xs text-gray-400">{{ $review->created_at->diffForHumans() }}</span>
+                                </div>
+                                <div class="flex gap-1 my-1">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <i
+                                            class="fa-star text-xs {{ $i <= $review->rating ? 'fa-solid text-yellow-400' : 'fa-regular text-gray-300' }}"></i>
+                                    @endfor
+                                </div>
+                                <p class="text-gray-600 text-sm mt-2">{{ $review->comment }}</p>
+
+                                @if($review->images)
+                                    <div class="flex gap-2 mt-3">
+                                        @foreach($review->images as $img)
+                                            <img src="{{ asset('storage/' . $img) }}"
+                                                class="w-16 h-16 rounded-xl object-cover border border-gray-100">
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-12 text-gray-400">
+                        <i class="fa-regular fa-comment text-4xl mb-3 block"></i>
+                        <p class="font-bold">Belum ada ulasan untuk produk ini.</p>
+                    </div>
+                @endforelse
+            </div>
+
             @if($relatedProducts->count() > 0)
                 <div class="mt-24">
                     <h2 class="text-2xl font-extrabold text-brand-dark mb-8">Produk <span

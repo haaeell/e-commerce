@@ -28,6 +28,7 @@ Route::get('/collections/{slug}', [LandingPageController::class, 'show'])->name(
 
 Route::post('/midtrans/callback', [App\Http\Controllers\MidtransController::class, 'callback']);
 Route::get('/order/{order}/payment-status', [CheckoutController::class, 'checkPaymentStatus'])->middleware('auth');
+Route::post('/order/{order}/review', [OrderHistoryController::class, 'submitReview'])->middleware('auth')->name('order.review.store');
 
 Route::middleware(['auth'])->group(function () {
 

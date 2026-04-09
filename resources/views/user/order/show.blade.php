@@ -75,7 +75,7 @@
                                     <div class="relative z-10 flex flex-col items-center">
                                         <div
                                             class="w-10 h-10 rounded-full flex items-center justify-center border-4 border-white shadow-sm transition-all 
-                                                                                                                                                                                                                    {{ $currentIndex >= $index ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-400' }}">
+                                                                                                                                                                                                                                            {{ $currentIndex >= $index ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-400' }}">
                                             <i class="fa-solid {{ $statusMap[$step]['icon'] }} text-[10px]"></i>
                                         </div>
                                         <span
@@ -122,6 +122,68 @@
                             @endforeach
                         </div>
                     </div>
+
+                    {{-- REVIEW SECTION --}}
+                    @if($order->status == 'delivered')
+                        <div class="bg-white rounded-[32px] overflow-hidden shadow-sm border border-gray-100">
+                            <div class="p-6 border-b border-gray-50 bg-gray-50/50">
+                                <h3 class="font-bold text-brand-dark flex items-center gap-2">
+                                    <i class="fa-solid fa-star text-brand-primary"></i> Ulasan Produk
+                                </h3>
+                            </div>
+                            <div class="p-6 divide-y divide-gray-100">
+                                @foreach($order->items as $item)
+                                    <div class="py-6 first:pt-0 last:pb-0" id="review-item-{{ $item->id }}">
+                                        <div class="flex gap-4 items-start">
+                                            <div class="w-14 h-16 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
+                                                @php $img = $item->product->images->where('is_primary', true)->first(); @endphp
+                                                <img src="{{ $img ? asset('storage/' . $img->image_url) : 'https://via.placeholder.com/100' }}"
+                                                    class="w-full h-full object-cover">
+                                            </div>
+                                            <div class="flex-1">
+                                                <p class="font-bold text-brand-dark text-sm">{{ $item->product->name }}</p>
+                                                @if($item->variant)
+                                                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-2">
+                                                        {{ $item->variant->name }}</p>
+                                                @endif
+
+                                                @if($item->review)
+                                                    <div class="mt-2 bg-soft-mint/30 rounded-xl p-3 border border-brand-primary/10">
+                                                        <div class="flex gap-1 mb-1">
+                                                            @for($i = 1; $i <= 5; $i++)
+                                                                <i
+                                                                    class="fa-star text-xs {{ $i <= $item->review->rating ? 'fa-solid text-yellow-400' : 'fa-regular text-gray-300' }}"></i>
+                                                            @endfor
+                                                        </div>
+                                                        <p class="text-xs text-gray-600">{{ $item->review->comment ?? '-' }}</p>
+                                                    </div>
+                                                @else
+                                                    {{-- form review --}}
+                                                    <div class="mt-2">
+                                                        <div class="flex gap-1 mb-2 star-rating" data-item="{{ $item->id }}">
+                                                            @for($i = 1; $i <= 5; $i++)
+                                                                <i class="fa-regular fa-star text-xl text-gray-300 cursor-pointer hover:text-yellow-400 transition-colors star-btn"
+                                                                    data-value="{{ $i }}"></i>
+                                                            @endfor
+                                                        </div>
+                                                        <input type="hidden" class="rating-value" id="rating-{{ $item->id }}" value="0">
+                                                        <textarea
+                                                            class="w-full text-sm border border-gray-100 rounded-xl p-3 bg-gray-50 resize-none focus:outline-none focus:border-brand-primary/50 transition-colors"
+                                                            rows="2" placeholder="Tulis ulasanmu..."
+                                                            id="comment-{{ $item->id }}"></textarea>
+                                                        <button onclick="submitReview({{ $order->id }}, {{ $item->id }})"
+                                                            class="mt-2 px-4 py-2 bg-brand-primary text-white text-xs font-bold rounded-xl hover:opacity-90 transition-all">
+                                                            Kirim Ulasan
+                                                        </button>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
 
                     {{-- TRACKING --}}
                     @if ($order->shipment && $order->shipment->resi)
@@ -221,16 +283,13 @@
                         </div>
 
                         {{-- STATUS PEMBAYARAN & TOMBOL BAYAR --}}
-                        {{-- Di dalam Sidebar atau Area Status Pembayaran --}}
                         <div class="relative z-10">
                             @if($order->status == 'pending')
-                                {{-- Tombol Bayar (Sudah ada di kode sebelumnya) --}}
                                 <button id="pay-button"
                                     class="w-full py-4 bg-brand-primary text-white font-bold rounded-2xl shadow-lg hover:shadow-brand-primary/30 transition-all mt-4 flex items-center justify-center gap-2">
                                     BAYAR SEKARANG </button>
 
                             @elseif($order->status == 'processing')
-                                {{-- TAMPILAN PROCESSING --}}
                                 <div class="bg-indigo-500/10 rounded-2xl p-6 border border-indigo-500/20 text-center">
                                     <div
                                         class="w-16 h-16 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
@@ -251,7 +310,6 @@
                                 </div>
 
                             @elseif($order->status == 'shipped')
-                                {{-- Tampilan sudah dikirim --}}
                                 <div class="bg-cyan-500/10 rounded-2xl p-6 border border-cyan-500/20 text-center">
                                     <i class="fa-solid fa-truck-fast text-cyan-400 text-3xl mb-3"></i>
                                     <h4 class="font-bold text-white text-sm mb-1">Pesanan Dalam Perjalanan</h4>
@@ -262,8 +320,6 @@
                     </div>
 
 
-
-                    {{-- ALAMAT CARD --}}
                     <div class="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100">
                         <h4
                             class="font-bold text-brand-dark mb-4 text-xs uppercase tracking-widest flex items-center gap-2">
@@ -369,6 +425,78 @@
                 });
                 setTimeout(() => startPolling(), 2000);
             });
+        </script>
+    @endif
+
+    @if ($order->status == 'delivered')
+        <script>
+            document.querySelectorAll('.star-rating').forEach(group => {
+                const stars = group.querySelectorAll('.star-btn');
+                const itemId = group.dataset.item;
+
+                stars.forEach(star => {
+                    star.addEventListener('mouseover', function() {
+                        const val = this.dataset.value;
+                        stars.forEach(s => {
+                            s.classList.toggle('fa-solid', s.dataset.value <= val);
+                            s.classList.toggle('fa-regular', s.dataset.value > val);
+                            s.classList.toggle('text-yellow-400', s.dataset.value <= val);
+                            s.classList.toggle('text-gray-300', s.dataset.value > val);
+                        });
+                    });
+
+                    star.addEventListener('click', function() {
+                        document.getElementById('rating-' + itemId).value = this.dataset.value;
+                    });
+
+                    star.addEventListener('mouseleave', function() {
+                        const selected = document.getElementById('rating-' + itemId).value;
+                        stars.forEach(s => {
+                            s.classList.toggle('fa-solid', s.dataset.value <= selected);
+                            s.classList.toggle('fa-regular', s.dataset.value > selected);
+                            s.classList.toggle('text-yellow-400', s.dataset.value <= selected);
+                            s.classList.toggle('text-gray-300', s.dataset.value > selected);
+                        });
+                    });
+                });
+            });
+
+            async function submitReview(orderId, itemId) {
+                const rating = document.getElementById('rating-' + itemId).value;
+                const comment = document.getElementById('comment-' + itemId).value;
+
+                if (rating == 0) {
+                    Swal.fire({ icon: 'warning', title: 'Pilih Rating', text: 'Berikan bintang terlebih dahulu.', confirmButtonText: 'OK' });
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`/order/${orderId}/review`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ order_item_id: itemId, rating, comment })
+                    });
+
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Terima Kasih!',
+                            text: 'Ulasan kamu berhasil dikirim.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => window.location.reload());
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Gagal', text: data.message });
+                    }
+                } catch (e) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan.' });
+                }
+            }
         </script>
     @endif
 @endpush
