@@ -69,27 +69,43 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-end mb-10">
                 <div>
-                    <h2 class="text-2xl md:text-3xl font-bold text-brand-dark mb-1">Pilih Kategori</h2>
-                    <p class="text-gray-400 text-sm">Temukan gaya hijab yang sesuai karaktermu</p>
+                    <p class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-2">Jelajahi Pilihan</p>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-brand-dark">Pilih Kategori</h2>
                 </div>
+                <a href="{{ route('collections.index') }}"
+                    class="hidden md:flex items-center gap-2 text-sm font-bold text-brand-primary hover:underline">
+                    Lihat Semua
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
             </div>
 
-            <div class="flex overflow-x-auto gap-5 no-scrollbar pb-4 -mx-4 px-4 md:mx-0 md:px-0">
+            <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-5">
                 @foreach($categories as $category)
-                    <a href="#" class="flex-none w-28 text-center group">
+                    <a href="{{ route('collections.index', ['category' => $category->slug]) }}"
+                        class="group flex flex-col items-center gap-3 p-4 md:p-5 bg-gray-50 rounded-3xl border border-gray-100 hover:border-brand-primary/30 hover:bg-brand-primary/5 hover:shadow-lg hover:shadow-brand-primary/10 transition-all duration-300 hover:-translate-y-1">
                         <div
-                            class="w-24 h-24 mx-auto aspect-square bg-soft-mint rounded-[30px] flex items-center justify-center mb-3 group-hover:bg-brand-primary group-hover:shadow-lg group-hover:shadow-brand-primary/30 transition-all duration-300 group-hover:-translate-y-1 relative overflow-hidden border border-brand-primary/5">
+                            class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white flex items-center justify-center shadow-sm border border-gray-100 group-hover:border-brand-primary/20 group-hover:shadow-brand-primary/10 transition-all duration-300">
                             <img src="{{ $category->image ? asset('storage/' . $category->image) : 'https://cdn-icons-png.flaticon.com/512/3144/3144453.png' }}"
-                                class="w-12 h-12 object-contain relative z-10 transition-transform group-hover:scale-110"
+                                class="w-8 h-8 md:w-9 md:h-9 object-contain transition-transform duration-300 group-hover:scale-110"
                                 alt="{{ $category->name }}">
-                            <div
-                                class="absolute -bottom-5 -right-5 w-16 h-16 bg-white/20 rounded-full scale-0 group-hover:scale-100 transition-transform duration-500">
-                            </div>
                         </div>
-                        <span
-                            class="text-xs md:text-sm font-semibold text-brand-dark uppercase tracking-tight group-hover:text-brand-primary transition-colors">{{ $category->name }}</span>
+                        <div class="text-center">
+                            <span
+                                class="block text-xs md:text-sm font-bold text-brand-dark group-hover:text-brand-primary transition-colors leading-tight">{{ $category->name }}</span>
+                            @if(isset($category->products_count))
+                                <span class="block text-[10px] text-gray-400 mt-0.5">{{ $category->products_count }} produk</span>
+                            @endif
+                        </div>
                     </a>
                 @endforeach
+            </div>
+
+            <div class="mt-8 text-center md:hidden">
+                <a href="{{ route('collections.index') }}"
+                    class="inline-flex items-center gap-2 text-sm font-bold text-brand-primary hover:underline">
+                    Lihat Semua Kategori
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
             </div>
         </div>
     </section>

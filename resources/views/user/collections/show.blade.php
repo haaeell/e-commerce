@@ -3,6 +3,22 @@
 @section('title', $product->name . ' - Al-Hayya Hijab')
 
 @section('content')
+    @php
+        $displayPrice = $product->has_variant && $product->variants->count() > 0
+            ? $product->variants->first()->price
+            : $product->price;
+
+        $displayComparePrice = $product->has_variant && $product->variants->count() > 0
+            ? $product->variants->first()->compare_price
+            : $product->compare_price;
+
+        $displayStock = $product->has_variant && $product->variants->count() > 0
+            ? $product->variants->first()->stock
+            : $product->stock;
+
+        $primaryImage = $product->images->where('is_primary', true)->first();
+    @endphp
+
     <section class="py-12 bg-white px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <nav class="flex text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
@@ -17,12 +33,11 @@
                 <div class="w-full lg:w-1/2 space-y-4">
                     <div
                         class="relative aspect-[3/4] max-h-[550px] mx-auto rounded-[40px] overflow-hidden bg-gray-50 border border-gray-100 shadow-sm">
-                        @php $primaryImage = $product->images->where('is_primary', true)->first(); @endphp
                         <img id="mainImage"
                             src="{{ asset('storage/' . ($primaryImage ? $primaryImage->image_url : 'default.jpg')) }}"
                             class="w-full h-full object-cover transition-all duration-500 hover:scale-105">
 
-                        @if($product->compare_price > $product->price)
+                        @if($displayComparePrice > $displayPrice)
                             <div
                                 class="absolute top-6 left-6 px-4 py-2 bg-red-500 text-white text-xs font-black rounded-full shadow-lg">
                                 SALE
@@ -50,11 +65,11 @@
                         <div class="flex items-center gap-4 mt-4">
                             <div id="displayPrice"
                                 class="flex items-center text-brand-dark font-black text-2xl md:text-3xl">
-                                Rp{{ number_format($product->price, 0, ',', '.') }}
+                                Rp{{ number_format($displayPrice, 0, ',', '.') }}
                             </div>
-                            @if($product->compare_price > $product->price)
-                                <div class="text-gray-300 line-through font-bold text-lg">
-                                    Rp{{ number_format($product->compare_price, 0, ',', '.') }}
+                            @if($displayComparePrice > $displayPrice)
+                                <div id="displayComparePrice" class="text-gray-300 line-through font-bold text-lg">
+                                    Rp{{ number_format($displayComparePrice, 0, ',', '.') }}
                                 </div>
                             @endif
                         </div>
@@ -110,13 +125,13 @@
                                 <button type="button" onclick="adjustQty(-1)"
                                     class="w-10 h-10 flex items-center justify-center text-brand-dark hover:bg-white rounded-xl transition-all shadow-sm">-</button>
                                 <input type="number" name="quantity" id="qtyInput" value="1" min="1"
-                                    max="{{ $product->stock }}"
+                                    max="{{ $displayStock }}"
                                     class="w-12 text-center bg-transparent font-bold text-brand-dark outline-none">
                                 <button type="button" onclick="adjustQty(1)"
                                     class="w-10 h-10 flex items-center justify-center text-brand-dark hover:bg-white rounded-xl transition-all shadow-sm">+</button>
                             </div>
                             <p class="text-xs font-bold text-gray-400">Stok: <span class="text-brand-dark"
-                                    id="productStock">{{ $product->stock }}</span></p>
+                                    id="productStock">{{ $displayStock }}</span></p>
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -145,7 +160,6 @@
                 </div>
             </div>
 
-            {{-- Section Review --}}
             <div class="mt-16">
                 <div class="flex items-center gap-4 mb-8">
                     <h2 class="text-2xl font-extrabold text-brand-dark">Ulasan <span
@@ -153,7 +167,6 @@
                     <span class="text-sm font-bold text-gray-400">({{ $totalReviews }} ulasan)</span>
                 </div>
 
-                {{-- Rating Summary --}}
                 @if($totalReviews > 0)
                     <div class="flex items-center gap-4 mb-8 p-6 bg-soft-mint/30 rounded-2xl border border-brand-primary/10">
                         <div class="text-center">
@@ -169,7 +182,6 @@
                     </div>
                 @endif
 
-                {{-- List Review --}}
                 @forelse($product->reviews as $review)
                     <div class="py-6 border-b border-gray-100 last:border-0">
                         <div class="flex items-start gap-4">
@@ -190,7 +202,6 @@
                                     @endfor
                                 </div>
                                 <p class="text-gray-600 text-sm mt-2">{{ $review->comment }}</p>
-
                                 @if($review->images)
                                     <div class="flex gap-2 mt-3">
                                         @foreach($review->images as $img)
@@ -252,6 +263,13 @@
             if (match) {
                 $('#selectedVariantId').val(match.id);
                 $('#displayPrice').text('Rp' + new Intl.NumberFormat('id-ID').format(match.price));
+
+                if (match.compare_price > match.price) {
+                    $('#displayComparePrice').text('Rp' + new Intl.NumberFormat('id-ID').format(match.compare_price)).show();
+                } else {
+                    $('#displayComparePrice').hide();
+                }
+
                 $('#productStock').text(match.stock);
                 $('#qtyInput').attr('max', match.stock);
                 if (parseInt($('#qtyInput').val()) > match.stock) $('#qtyInput').val(match.stock);
