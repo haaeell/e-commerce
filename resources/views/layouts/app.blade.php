@@ -112,6 +112,7 @@
 
     <aside id="sidebar"
         class="w-64 bg-white border-r border-gray-100 flex flex-col fixed h-full z-[60] sidebar-transition sidebar-closed lg:transform-none">
+
         <div class="p-8 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div
@@ -127,31 +128,38 @@
 
         <nav class="flex-1 px-4 space-y-1 overflow-y-auto pb-10">
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-4">Utama</p>
-            <a href="{{ url()->current() == url('/home') ? '#' : '/home' }}"
-                class="active-menu flex items-center gap-4 px-4 py-3.5 rounded-xl font-bold text-gray-500 hover:bg-gray-50 transition-all">
+
+            <a href="/home"
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all 
+                {{ request()->is('home') ? 'active-menu font-bold text-gray-500' : 'font-semibold text-gray-500 hover:bg-gray-50' }}">
                 <i class="fa-solid fa-chart-simple w-5"></i> Dashboard
             </a>
 
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-6">Master</p>
+
             <a href="/categories"
-                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all 
+                {{ request()->is('categories*') ? 'active-menu font-bold text-gray-500' : 'font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark' }}">
                 <i class="fa-solid fa-layer-group w-5"></i> Kategori
             </a>
 
             <a href="/brands"
-                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all 
+                {{ request()->is('brands*') ? 'active-menu font-bold text-gray-500' : 'font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark' }}">
                 <i class="fa-solid fa-copyright w-5"></i> Brand
             </a>
 
             <a href="/products"
-                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all 
+                {{ request()->is('products*') ? 'active-menu font-bold text-gray-500' : 'font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark' }}">
                 <i class="fa-solid fa-box w-5"></i> Produk
             </a>
 
-
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-6">Penjualan</p>
+
             <a href="/orders"
-                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all 
+                {{ request()->is('orders*') ? 'active-menu font-bold text-gray-500' : 'font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark' }}">
                 <i class="fa-solid fa-cart-shopping w-5"></i> Pesanan
 
                 @php
@@ -164,18 +172,24 @@
                     </span>
                 @endif
             </a>
+
             <a href="/coupons"
-                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all 
+                {{ request()->is('coupons*') ? 'active-menu font-bold text-gray-500' : 'font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark' }}">
                 <i class="fa-solid fa-ticket w-5"></i> Kupon Promo
             </a>
 
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-6">Pengguna</p>
+
             <a href="/customers"
-                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all 
+                {{ request()->is('customers*') ? 'active-menu font-bold text-gray-500' : 'font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark' }}">
                 <i class="fa-solid fa-user-group w-5"></i> Pelanggan
             </a>
+
             <a href="/reviews"
-                class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
+                class="flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all 
+                {{ request()->is('reviews*') ? 'active-menu font-bold text-gray-500' : 'font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark' }}">
                 <i class="fa-solid fa-message w-5"></i> Ulasan
             </a>
         </nav>
