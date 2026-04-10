@@ -49,7 +49,7 @@ class RegisterController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'redirect' => route('home'),
+            'redirect' => url('/'),
             'message' => 'Pendaftaran berhasil!'
         ]);
     }

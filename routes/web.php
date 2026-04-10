@@ -22,7 +22,6 @@ Route::get('/', [LandingPageController::class, 'index']);
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/collections', [LandingPageController::class, 'collections'])->name('collections.index');
 Route::get('/collections/{slug}', [LandingPageController::class, 'show'])->name('collections.show');
 Route::get('/about-us', [LandingPageController::class, 'about'])->name('about.index');
@@ -35,104 +34,111 @@ Route::post('/order/{order}/review', [OrderHistoryController::class, 'submitRevi
 
 Route::middleware(['auth'])->group(function () {
 
-    // Categories
-    Route::prefix('categories')->controller(CategoryController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::post('/', 'store');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
+    // ADMIN ONLY ROUTES
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/home', [HomeController::class, 'index'])->name('home');
+        // Categories
+        Route::prefix('categories')->controller(CategoryController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+        });
+
+        // Brands
+        Route::prefix('brands')->controller(BrandController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+        });
+
+        // Coupons
+        Route::prefix('coupons')->controller(CouponController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+        });
+
+        // Customers
+        Route::prefix('customers')->controller(CustomerController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+        });
+
+        // Reviews Management
+        Route::prefix('reviews')->controller(ReviewController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::patch('/{id}/toggle-verify', 'toggleVerify');
+            Route::delete('/{id}', 'destroy');
+        });
+        Route::post('/reviews/{id}/verify', [OrderController::class, 'verify'])->name('reviews.verify');
+
+        // Products
+        Route::prefix('products')->controller(ProductController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::get('/{id}', 'show');
+            Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+            Route::delete('/{id}/images/{imageId}', 'destroyImage');
+            Route::post('/{id}/images/primary/{imageId}', 'setPrimaryImage');
+            Route::post('/{id}/variants', 'storeVariant');
+            Route::put('/{id}/variants/{variantId}', 'updateVariant');
+            Route::delete('/{id}/variants/{variantId}', 'destroyVariant');
+        });
+
+        // Orders Management
+        Route::prefix('orders')->controller(OrderController::class)->group(function () {
+            Route::get('/', 'index')->name('orders.index');
+            Route::get('/{id}', 'show')->name('orders.show');
+            Route::get('/{id}/api', 'showApi')->name('orders.api');
+            Route::patch('/{id}/status', 'updateStatus')->name('orders.status');
+            Route::patch('/{id}/resi', 'updateResi')->name('orders.resi');
+        });
+
+        Route::prefix('profile')->controller(ProfileController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::put('/update', 'updateProfile')->name('profile.update');
+            Route::put('/password', 'updatePassword')->name('profile.password');
+        });
     });
 
-    // Brands
-    Route::prefix('brands')->controller(BrandController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::post('/', 'store');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
-    });
+    // CUSTOMER ONLY ROUTES
+    Route::middleware(['customer'])->group(function () {
 
-    // Coupons
-    Route::prefix('coupons')->controller(CouponController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::post('/', 'store');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
-    });
+        // Cart
+        Route::prefix('cart')->controller(CartController::class)->group(function () {
+            Route::get('/', 'index')->name('cart.index');
+            Route::post('/add', 'store')->name('cart.store');
+            Route::patch('/update/{id}', 'update')->name('cart.update');
+            Route::delete('/delete/{id}', 'destroy')->name('cart.destroy');
+        });
 
-    Route::prefix('customers')->controller(CustomerController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::post('/', 'store');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
-    });
+        // Checkout
+        Route::prefix('checkout')->controller(CheckoutController::class)->group(function () {
+            Route::get('/', 'index')->name('checkout.index');
+            Route::post('/set-address', 'setAddress')->name('checkout.set-address');
+            Route::post('/check-ongkir', 'checkOngkir')->name('checkout.check-ongkir');
+            Route::get('/search-destination', 'searchDestination')->name('checkout.search-destination');
+            Route::post('/apply-coupon', 'applyCoupon')->name('checkout.apply-coupon');
+            Route::post('/remove-coupon', 'removeCoupon')->name('checkout.remove-coupon');
+            Route::post('/', 'store')->name('checkout.store');
+        });
 
-    Route::prefix('reviews')->controller(ReviewController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::patch('/{id}/toggle-verify', 'toggleVerify');
-        Route::delete('/{id}', 'destroy');
-    });
+        // Addresses
+        Route::prefix('addresses')->controller(AddressController::class)->group(function () {
+            Route::post('/', 'store')->name('addresses.store');
+        });
 
-    Route::prefix('profile')->controller(ProfileController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::put('/update', 'updateProfile')->name('profile.update');
-        Route::put('/password', 'updatePassword')->name('profile.password');
-    });
-
-    // Products
-    Route::prefix('products')->controller(ProductController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::post('/', 'store');
-        Route::get('/{id}', 'show');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
-
-        // Product Images
-        Route::delete('/{id}/images/{imageId}', 'destroyImage');
-        Route::post('/{id}/images/primary/{imageId}', 'setPrimaryImage');
-
-        // Product Variants
-        Route::post('/{id}/variants', 'storeVariant');
-        Route::put('/{id}/variants/{variantId}', 'updateVariant');
-        Route::delete('/{id}/variants/{variantId}', 'destroyVariant');
-    });
-
-    Route::prefix('orders')->controller(OrderController::class)->group(function () {
-
-        Route::get('/',        'index')->name('orders.index');
-        Route::get('/{id}',    'show')->name('orders.show');
-        Route::get('/{id}/api', 'showApi')->name('orders.api');
-        Route::patch('/{id}/status', 'updateStatus')->name('orders.status');
-        Route::patch('/{id}/resi', 'updateResi')->name('orders.resi');
-    });
-
-    Route::post('/reviews/{id}/verify', [OrderController::class, 'verify'])->name('reviews.verify');
-
-    // Cart
-    Route::prefix('cart')->controller(CartController::class)->group(function () {
-        Route::get('/',         'index')->name('cart.index');
-        Route::post('/add',     'store')->name('cart.store');
-        Route::patch('/update/{id}', 'update')->name('cart.update');
-        Route::delete('/delete/{id}', 'destroy')->name('cart.destroy');
-    });
-
-    // Checkout
-    Route::prefix('checkout')->controller(CheckoutController::class)->group(function () {
-        Route::get('/',         'index')->name('checkout.index');
-        Route::post('/set-address', 'setAddress')->name('checkout.set-address');
-        Route::post('/check-ongkir', 'checkOngkir')->name('checkout.check-ongkir');
-        Route::get('/search-destination', 'searchDestination')->name('checkout.search-destination');
-        Route::post('/apply-coupon',     'applyCoupon')->name('checkout.apply-coupon');
-        Route::post('/remove-coupon',    'removeCoupon')->name('checkout.remove-coupon');
-        Route::post('/',    'store')->name('checkout.store');
-    });
-
-    Route::prefix('addresses')->controller(AddressController::class)->group(function () {
-        Route::post('/',         'store')->name('addresses.store');
-    });
-
-    Route::prefix('order-history')->controller(OrderHistoryController::class)->group(function () {
-        Route::get('/', 'index')->name('order.history');
-        Route::get('/{id}', 'show')->name('order.history.show');
-        Route::patch('/{id}/complete', 'markAsCompleted')->name('order.history.complete');
+        // Order History
+        Route::prefix('order-history')->controller(OrderHistoryController::class)->group(function () {
+            Route::get('/', 'index')->name('order.history');
+            Route::get('/{id}', 'show')->name('order.history.show');
+            Route::patch('/{id}/complete', 'markAsCompleted')->name('order.history.complete');
+        });
     });
 });

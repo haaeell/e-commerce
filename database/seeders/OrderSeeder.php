@@ -22,10 +22,10 @@ class OrderSeeder extends Seeder
     public function run(): void
     {
         $customer = User::where('email', 'customer@mail.com')->first();
-        $product1 = Product::where('slug', 'hijab-basic-cream')->first();
-        $product2 = Product::where('slug', 'hijab-voal-premium')->first();
-        $variant1 = ProductVariant::where('name', 'Cream - L')->first();
-        $variant2 = ProductVariant::where('name', 'Hitam - XL')->first();
+        $product1 = Product::where('slug', 'voal-square-ultra-fine')->first();
+        $product2 = Product::where('slug', 'pashmina-silk-premium')->first();
+        $variant1 = ProductVariant::where('name', 'Dusty Rose - L')->first();
+        $variant2 = ProductVariant::where('name', 'Midnight Blue - L')->first();
         $coupon   = Coupon::where('code', 'DISKON10')->first();
 
         // ══════════════════════════════════════════════════════════════════════

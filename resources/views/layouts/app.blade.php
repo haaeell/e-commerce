@@ -127,7 +127,7 @@
 
         <nav class="flex-1 px-4 space-y-1 overflow-y-auto pb-10">
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-3 mt-4">Utama</p>
-            <a href="#"
+            <a href="{{ url()->current() == url('/home') ? '#' : '/home' }}"
                 class="active-menu flex items-center gap-4 px-4 py-3.5 rounded-xl font-bold text-gray-500 hover:bg-gray-50 transition-all">
                 <i class="fa-solid fa-chart-simple w-5"></i> Dashboard
             </a>
@@ -153,7 +153,16 @@
             <a href="/orders"
                 class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
                 <i class="fa-solid fa-cart-shopping w-5"></i> Pesanan
-                <span class="ml-auto bg-orange-100 text-orange-600 text-[10px] px-2 py-0.5 rounded-lg">8</span>
+
+                @php
+                    $count = \App\Models\Order::whereIn('status', ['pending', 'confirmed'])->count();
+                @endphp
+
+                @if($count > 0)
+                    <span class="ml-auto bg-orange-100 text-orange-600 text-[10px] px-2 py-0.5 rounded-lg">
+                        {{ $count }}
+                    </span>
+                @endif
             </a>
             <a href="/coupons"
                 class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-semibold text-gray-500 hover:bg-soft-mint/50 hover:text-brand-dark transition-all">
