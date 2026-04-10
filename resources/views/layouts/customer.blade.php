@@ -213,12 +213,25 @@
 
             <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-brand-dark/80">
                 <a href="/"
-                    class="hover:text-brand-primary transition-colors relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform">Beranda</a>
-                <a href="{{ route('collections.index') }}"
-                    class="hover:text-brand-primary transition-colors">Koleksi</a>
-                <a href="#" class="hover:text-brand-primary transition-colors">Promo</a>
-            </div>
+                    class="transition-colors relative {{ request()->is('/') ? 'text-brand-primary after:scale-x-100' : 'hover:text-brand-primary after:scale-x-0' }} after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-primary hover:after:scale-x-100 after:transition-transform">
+                    Beranda
+                </a>
 
+                <a href="{{ route('collections.index') }}"
+                    class="transition-colors {{ request()->routeIs('collections.*') ? 'text-brand-primary' : 'hover:text-brand-primary' }}">
+                    Koleksi
+                </a>
+
+                <a href="{{ route('promo.index') }}"
+                    class="transition-colors {{ request()->routeIs('promo.*') ? 'text-brand-primary' : 'hover:text-brand-primary' }}">
+                    Promo
+                </a>
+
+                <a href="{{ route('about.index') }}"
+                    class="transition-colors {{ request()->routeIs('about.*') ? 'text-brand-primary' : 'hover:text-brand-primary' }}">
+                    Tentang Kami
+                </a>
+            </div>
             <div class="flex items-center gap-4">
                 <a href="/cart" class="relative p-2 text-brand-dark hover:text-brand-primary transition-colors">
                     <i class="fa-solid fa-cart-shopping text-xl"></i>
@@ -254,13 +267,13 @@
                                 <p class="text-xs font-bold text-brand-primary uppercase">{{ Auth::user()->role }}</p>
                             </div>
 
-                            <a href="/profile"
+                            <a href="/user/profile"
                                 class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-brand-dark hover:bg-soft-mint rounded-2xl transition-colors group">
                                 <div
                                     class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-white transition-colors">
                                     <i class="fa-solid fa-gear text-xs text-gray-400 group-hover:text-brand-primary"></i>
                                 </div>
-                                Pengaturan Akun
+                                Profile
                             </a>
 
                             <a href="/order-history"
@@ -379,21 +392,75 @@
         </div>
     </footer>
 
-    <div class="md:hidden fixed bottom-6 left-6 right-6 z-50">
+    <div class="md:hidden fixed bottom-4 left-4 right-4 z-50">
         <div
-            class="bg-brand-dark/95 backdrop-blur-lg rounded-[28px] shadow-2xl px-8 py-5 flex justify-between items-center border border-white/10">
-            <a href="/" class="text-brand-primary flex flex-col items-center">
-                <i class="fa-solid fa-house text-xl"></i>
+            class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 px-4 py-3 flex justify-between items-center">
+
+            <a href="/" class="flex flex-col items-center gap-1 group w-1/5">
+                <div
+                    class="w-10 h-10 flex items-center justify-center rounded-xl {{ request()->is('/') ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' : 'bg-gray-50 text-gray-400' }} transition-all">
+                    <i class="fa-solid fa-house text-lg"></i>
+                </div>
+                <span
+                    class="text-[9px] font-bold tracking-tighter {{ request()->is('/') ? 'text-brand-primary' : 'text-gray-400' }}">Home</span>
             </a>
-            <a href="#" class="text-white/50 flex flex-col items-center">
-                <i class="fa-solid fa-magnifying-glass text-xl"></i>
+
+            <a href="{{ route('collections.index') }}" class="flex flex-col items-center gap-1 group w-1/5">
+                <div
+                    class="w-10 h-10 flex items-center justify-center rounded-xl {{ request()->routeIs('collections.*') ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' : 'bg-gray-50 text-gray-400' }} transition-all">
+                    <i class="fa-solid fa-layer-group text-lg"></i>
+                </div>
+                <span
+                    class="text-[9px] font-bold tracking-tighter {{ request()->routeIs('collections.*') ? 'text-brand-primary' : 'text-gray-400' }}">Koleksi</span>
             </a>
-            <a href="#" class="text-white/50 flex flex-col items-center">
-                <i class="fa-solid fa-heart text-xl"></i>
+
+            <a href="/cart" class="relative flex flex-col items-center gap-1 w-1/5">
+                <div
+                    class="w-12 h-12 flex items-center justify-center rounded-2xl {{ request()->is('cart') ? 'bg-brand-primary' : 'bg-brand-dark' }} text-white shadow-lg -mt-10 border-4 border-[#FBFBFE] transition">
+                    <i class="fa-solid fa-cart-shopping text-lg"></i>
+                </div>
+                <span
+                    class="text-[9px] font-bold tracking-tighter {{ request()->is('cart') ? 'text-brand-primary' : 'text-brand-dark' }} mt-1">Cart</span>
+                <span
+                    class="absolute -top-11 right-2 bg-brand-primary text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white font-bold shadow-sm">
+                    @auth
+                                    {{ \App\Models\CartItem::whereHas('cart', function ($q) {
+                        $q->where('user_id', auth()->id()); })->count() }}
+                    @else
+                        0
+                    @endauth
+                </span>
             </a>
-            <a href="/login" class="text-white/50 flex flex-col items-center">
-                <i class="fa-solid fa-user text-xl"></i>
+
+            <a href="{{ route('about.index') }}" class="flex flex-col items-center gap-1 group w-1/5">
+                <div
+                    class="w-10 h-10 flex items-center justify-center rounded-xl {{ request()->routeIs('about.*') ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' : 'bg-gray-50 text-gray-400' }} transition-all">
+                    <i class="fa-solid fa-circle-info text-lg"></i>
+                </div>
+                <span
+                    class="text-[9px] font-bold tracking-tighter {{ request()->routeIs('about.*') ? 'text-brand-primary' : 'text-gray-400' }}">Tentang</span>
             </a>
+
+            @auth
+                <a href="/user/profile" class="flex flex-col items-center gap-1 group w-1/5">
+                    <div
+                        class="w-10 h-10 flex items-center justify-center rounded-xl {{ request()->is('user/profile*') ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' : 'bg-gray-50 text-gray-400' }} transition-all">
+                        <i class="fa-solid fa-user text-lg"></i>
+                    </div>
+                    <span
+                        class="text-[9px] font-bold tracking-tighter {{ request()->is('user/profile*') ? 'text-brand-primary' : 'text-gray-400' }}">Profile</span>
+                </a>
+            @else
+                <a href="/login" class="flex flex-col items-center gap-1 group w-1/5">
+                    <div
+                        class="w-10 h-10 flex items-center justify-center rounded-xl {{ request()->is('login') ? 'bg-brand-primary text-white' : 'bg-gray-50 text-gray-400' }} transition-all border border-dashed border-gray-200">
+                        <i class="fa-solid fa-right-to-bracket text-lg"></i>
+                    </div>
+                    <span
+                        class="text-[9px] font-bold tracking-tighter {{ request()->is('login') ? 'text-brand-primary' : 'text-gray-400' }}">Login</span>
+                </a>
+            @endauth
+
         </div>
     </div>
 

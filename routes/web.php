@@ -25,6 +25,9 @@ Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/collections', [LandingPageController::class, 'collections'])->name('collections.index');
 Route::get('/collections/{slug}', [LandingPageController::class, 'show'])->name('collections.show');
+Route::get('/about-us', [LandingPageController::class, 'about'])->name('about.index');
+Route::get('/promo', [LandingPageController::class, 'promo'])->name('promo.index');
+Route::get('/user/profile', [LandingPageController::class, 'profile'])->name('profile.index');
 
 Route::post('/midtrans/callback', [App\Http\Controllers\MidtransController::class, 'callback']);
 Route::get('/order/{order}/payment-status', [CheckoutController::class, 'checkPaymentStatus'])->middleware('auth');

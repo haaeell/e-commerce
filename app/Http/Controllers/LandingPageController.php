@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Coupon;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class LandingPageController extends Controller
@@ -71,5 +74,39 @@ class LandingPageController extends Controller
         $totalReviews = $product->reviews->count();
 
         return view('user.collections.show', compact('product', 'relatedProducts', 'averageRating', 'totalReviews'));
+    }
+
+    public function about(Request $request)
+    {
+        return view('user.about.index');
+    }
+    public function profile(Request $request)
+    {
+        $orderCount = Order::where('user_id', Auth::id())->count();
+        $voucherCount = Coupon::where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('started_at')->orWhere('started_at', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('expired_at')->orWhere('expired_at', '>=', now());
+            })
+            ->count();
+
+        return view('user.profile.index', compact('orderCount', 'voucherCount'));
+    }
+
+    public function promo()
+    {
+        $coupons = Coupon::where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('started_at')->orWhere('started_at', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('expired_at')->orWhere('expired_at', '>=', now());
+            })
+            ->latest()
+            ->get();
+
+        return view('user.promo.index', compact('coupons'));
     }
 }
