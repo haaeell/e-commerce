@@ -90,8 +90,8 @@
                                             class="courier-checkbox peer sr-only">
                                         <div
                                             class="py-3 px-4 border-2 border-gray-100 rounded-2xl text-center
-                                                                                                                                                                                                                                                            peer-checked:border-brand-primary peer-checked:bg-soft-mint/30
-                                                                                                                                                                                                                                                            transition-all cursor-pointer select-none">
+                                                                                                                                                                                                                                                                                                            peer-checked:border-brand-primary peer-checked:bg-soft-mint/30
+                                                                                                                                                                                                                                                                                                            transition-all cursor-pointer select-none">
                                             <span
                                                 class="text-xs font-black text-gray-400 peer-checked:text-brand-primary uppercase tracking-widest">
                                                 {{ $name }}
@@ -105,7 +105,7 @@
 
                             <button type="button" id="btn-cek-ongkir"
                                 class="w-full py-3 bg-brand-primary text-brand-dark font-black rounded-xl text-sm
-                                                                                                                                           hover:-translate-y-0.5 transition-all active:scale-95">
+                                                                                                                                                                   hover:-translate-y-0.5 transition-all active:scale-95">
                                 <i class="fa-solid fa-magnifying-glass mr-2"></i> Cek Ongkir
                             </button>
 
@@ -164,12 +164,12 @@
                                         <input type="text" id="coupon_input" placeholder="Masukkan kode voucher"
                                             autocomplete="off" autocapitalize="characters"
                                             class="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-gray-200 text-sm font-bold
-                                                                                                       uppercase tracking-widest focus:outline-none focus:border-purple-400 transition-colors">
+                                                                                                                                                       uppercase tracking-widest focus:outline-none focus:border-purple-400 transition-colors">
                                     </div>
                                     <button type="button" id="btn-apply-coupon"
                                         class="px-5 py-3.5 bg-purple-500 text-white font-black rounded-xl text-sm
-                                                                                                   hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap
-                                                                                                   disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
+                                                                                                                                                   hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap
+                                                                                                                                                   disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
                                         Pakai
                                     </button>
                                 </div>
@@ -258,9 +258,9 @@
                             <button type="submit" id="btn-submit" @if(!$address || !$address->rajaongkir_destination_id)
                             disabled @endif
                                 class="group relative w-full py-4 bg-brand-primary text-brand-dark font-black rounded-2xl
-                                                                                                                                           flex items-center justify-center gap-3 overflow-hidden transition-all active:scale-95
-                                                                                                                                           shadow-xl hover:shadow-brand-primary/40 hover:-translate-y-1
-                                                                                                                                           disabled:bg-gray-600 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none">
+                                                                                                                                                                   flex items-center justify-center gap-3 overflow-hidden transition-all active:scale-95
+                                                                                                                                                                   shadow-xl hover:shadow-brand-primary/40 hover:-translate-y-1
+                                                                                                                                                                   disabled:bg-gray-600 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none">
                                 <span class="relative z-10 uppercase tracking-tighter">Lanjut ke Pembayaran</span>
                                 <i
                                     class="fa-solid fa-arrow-right text-xs relative z-10 group-hover:translate-x-1 transition-transform"></i>
@@ -356,9 +356,15 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="text-xs font-bold text-gray-500 mb-1 block">Label Alamat</label>
-                                    <input type="text" name="label" placeholder="Contoh: Rumah, Kantor"
-                                        class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-brand-primary transition-colors"
+                                    <select name="label"
+                                        class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-brand-primary transition-colors bg-white"
                                         required>
+                                        <option value="" disabled selected>Pilih label...</option>
+                                        <option value="Rumah"><i class="fa-solid fa-home"></i> Rumah</option>
+                                        <option value="Kantor"><i class="fa-solid fa-building"></i> Kantor</option>
+                                        <option value="Kost"><i class="fa-solid fa-hotel"></i> Kost</option>
+                                        <option value="Lainnya"><i class="fa-solid fa-location-dot"></i> Lainnya</option>
+                                    </select>
                                 </div>
                                 <div>
                                     <label class="text-xs font-bold text-gray-500 mb-1 block">Nama Penerima</label>
@@ -410,11 +416,40 @@
                                 </div>
                             </div>
 
+                            <div>
+                                <label class="text-xs font-bold text-gray-500 mb-1 block">
+                                    Titik Lokasi di Peta
+                                    <span class="text-[10px] font-normal text-gray-400 ml-1">(opsional, geser pin untuk
+                                        akurasi)</span>
+                                </label>
+                                <div class="rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+                                    <div id="map" class="w-full h-56"></div>
+                                </div>
+                                <div class="flex gap-3 mt-2">
+                                    <div class="flex-1">
+                                        <input type="text" id="lat_display" placeholder="Latitude"
+                                            class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-500 focus:outline-none focus:border-brand-primary bg-gray-50"
+                                            readonly>
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="text" id="lng_display" placeholder="Longitude"
+                                            class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-500 focus:outline-none focus:border-brand-primary bg-gray-50"
+                                            readonly>
+                                    </div>
+                                    <button type="button" id="btn-my-location"
+                                        class="px-3 py-2 bg-soft-mint text-brand-primary rounded-xl text-xs font-bold hover:bg-brand-primary hover:text-white transition-all whitespace-nowrap">
+                                        <i class="fa-solid fa-location-crosshairs mr-1"></i> Lokasiku
+                                    </button>
+                                </div>
+                            </div>
+
                             <input type="hidden" name="rajaongkir_destination_id" id="dest_id">
                             <input type="hidden" name="province" id="dest_province">
                             <input type="hidden" name="city" id="dest_city">
                             <input type="hidden" name="district" id="dest_district">
                             <input type="hidden" name="subdistrict" id="dest_subdistrict">
+                            <input type="hidden" name="latitude" id="dest_latitude">
+                            <input type="hidden" name="longitude" id="dest_longitude">
 
                             <div>
                                 <label class="text-xs font-bold text-gray-500 mb-1 block">Detail Alamat Lengkap</label>
@@ -425,8 +460,8 @@
 
                             <button type="submit" id="btn-save-address" disabled
                                 class="w-full py-4 bg-brand-primary text-brand-dark font-black rounded-xl shadow-lg
-                                                                                                                                           transition-all active:scale-95
-                                                                                                                                           disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100">
+                                                                                                                                                                   transition-all active:scale-95
+                                                                                                                                                                   disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100">
                                 <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan & Gunakan Alamat
                             </button>
                         </form>
@@ -471,11 +506,11 @@
                 };
                 const icon = type === 'error' ? 'xmark-circle' : 'triangle-exclamation';
                 $('#shipping-services').html(`
-                        <div class="p-6 border-2 rounded-2xl ${colors[type]} flex items-center gap-3">
-                            <i class="fa-solid fa-${icon}"></i>
-                            <p class="text-sm">${message}</p>
-                        </div>
-                    `);
+                                                <div class="p-6 border-2 rounded-2xl ${colors[type]} flex items-center gap-3">
+                                                    <i class="fa-solid fa-${icon}"></i>
+                                                    <p class="text-sm">${message}</p>
+                                                </div>
+                                            `);
             }
 
             function showCouponMessage(type, text) {
@@ -485,20 +520,20 @@
                 };
                 const icon = type === 'success' ? 'circle-check' : 'circle-xmark';
                 $('#coupon-message').removeClass('hidden').html(`
-                        <div class="flex items-center gap-2 p-3 border-2 rounded-xl text-xs font-bold ${styles[type]}">
-                            <i class="fa-solid fa-${icon}"></i>
-                            ${text}
-                        </div>
-                    `);
+                                                <div class="flex items-center gap-2 p-3 border-2 rounded-xl text-xs font-bold ${styles[type]}">
+                                                    <i class="fa-solid fa-${icon}"></i>
+                                                    ${text}
+                                                </div>
+                                            `);
             }
 
             function showLoading(message) {
                 $('#shipping-services').html(`
-                        <div class="flex flex-col items-center justify-center py-12 text-center">
-                            <div class="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4"></div>
-                            <p class="text-sm text-gray-600">${message}</p>
-                        </div>
-                    `);
+                                                <div class="flex flex-col items-center justify-center py-12 text-center">
+                                                    <div class="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4"></div>
+                                                    <p class="text-sm text-gray-600">${message}</p>
+                                                </div>
+                                            `);
             }
 
             // ─── ADDRESS MODAL ───────────────────────────────────────────────────
@@ -533,10 +568,10 @@
 
                 searchTimer = setTimeout(function () {
                     $('#destination_results').removeClass('hidden').html(`
-                            <div class="px-4 py-3 text-xs text-gray-400 flex items-center gap-2">
-                                <i class="fa-solid fa-circle-notch fa-spin"></i> Mencari lokasi...
-                            </div>
-                        `);
+                                                    <div class="px-4 py-3 text-xs text-gray-400 flex items-center gap-2">
+                                                        <i class="fa-solid fa-circle-notch fa-spin"></i> Mencari lokasi...
+                                                    </div>
+                                                `);
 
                     $.ajax({
                         url: "{{ route('checkout.search-destination') }}",
@@ -552,17 +587,17 @@
 
                             results.forEach(function (item) {
                                 $list.append(`
-                                        <div class="px-4 py-3 hover:bg-soft-mint/20 cursor-pointer transition-colors"
-                                             data-id="${item.id}"
-                                             data-province="${item.province_name}"
-                                             data-city="${item.city_name}"
-                                             data-district="${item.district_name}"
-                                             data-subdistrict="${item.subdistrict_name}"
-                                             data-zipcode="${item.zip_code}">
-                                            <p class="font-bold text-brand-dark text-xs">${item.subdistrict_name}, ${item.district_name}</p>
-                                            <p class="text-[10px] text-gray-400">${item.city_name}, ${item.province_name} ${item.zip_code}</p>
-                                        </div>
-                                    `);
+                                                                <div class="px-4 py-3 hover:bg-soft-mint/20 cursor-pointer transition-colors"
+                                                                     data-id="${item.id}"
+                                                                     data-province="${item.province_name}"
+                                                                     data-city="${item.city_name}"
+                                                                     data-district="${item.district_name}"
+                                                                     data-subdistrict="${item.subdistrict_name}"
+                                                                     data-zipcode="${item.zip_code}">
+                                                                    <p class="font-bold text-brand-dark text-xs">${item.subdistrict_name}, ${item.district_name}</p>
+                                                                    <p class="text-[10px] text-gray-400">${item.city_name}, ${item.province_name} ${item.zip_code}</p>
+                                                                </div>
+                                                            `);
                             });
                         },
                     });
@@ -642,52 +677,52 @@
                 services.sort((a, b) => parseInt(a.cost) - parseInt(b.cost));
 
                 let html = `
-                        <div class="flex items-center gap-2 mb-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
-                            <i class="fa-solid fa-bolt text-emerald-500"></i>
-                            <p class="text-xs font-bold text-emerald-700">
-                                ${services.length} ongkir tersedia
-                                <span class="text-emerald-600">(mulai ${formatRupiah(services[0].cost)})</span>
-                            </p>
-                        </div>
-                    `;
+                                                <div class="flex items-center gap-2 mb-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                                                    <i class="fa-solid fa-bolt text-emerald-500"></i>
+                                                    <p class="text-xs font-bold text-emerald-700">
+                                                        ${services.length} ongkir tersedia
+                                                        <span class="text-emerald-600">(mulai ${formatRupiah(services[0].cost)})</span>
+                                                    </p>
+                                                </div>
+                                            `;
 
                 services.forEach(function (svc, index) {
                     const cost = parseInt(svc.cost);
                     const isCheapest = index === 0;
 
                     html += `
-                            <label class="block cursor-pointer transition-all hover:scale-[1.02]">
-                                <input type="radio" name="shipping_service_radio" value="${cost}"
-                                       data-code="${svc.code}" data-service="${svc.service}"
-                                       data-name="${svc.name}" data-etd="${svc.etd}"
-                                       class="peer sr-only shipping-option">
-                                <div class="relative p-4 border-2 rounded-2xl flex justify-between items-center
-                                            ${isCheapest ? 'border-emerald-400 bg-emerald-50/50 shadow-lg ring-2 ring-emerald-200/50' : 'border-gray-100 hover:border-gray-200'}
-                                            peer-checked:border-brand-primary peer-checked:bg-soft-mint/30">
+                                                    <label class="block cursor-pointer transition-all hover:scale-[1.02]">
+                                                        <input type="radio" name="shipping_service_radio" value="${cost}"
+                                                               data-code="${svc.code}" data-service="${svc.service}"
+                                                               data-name="${svc.name}" data-etd="${svc.etd}"
+                                                               class="peer sr-only shipping-option">
+                                                        <div class="relative p-4 border-2 rounded-2xl flex justify-between items-center
+                                                                    ${isCheapest ? 'border-emerald-400 bg-emerald-50/50 shadow-lg ring-2 ring-emerald-200/50' : 'border-gray-100 hover:border-gray-200'}
+                                                                    peer-checked:border-brand-primary peer-checked:bg-soft-mint/30">
 
-                                    ${isCheapest ? `
-                                    <div class="absolute -top-2 -right-2 bg-emerald-500 text-white px-2 py-1 rounded-full text-[9px] font-bold shadow-lg animate-pulse">
-                                        💰 TERMURAH
-                                    </div>` : ''}
+                                                            ${isCheapest ? `
+                                                            <div class="absolute -top-2 -right-2 bg-emerald-500 text-white px-2 py-1 rounded-full text-[9px] font-bold shadow-lg animate-pulse">
+                                                                💰 TERMURAH
+                                                            </div>` : ''}
 
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <span class="text-sm font-bold text-brand-dark">${svc.name}</span>
-                                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">${svc.service}</span>
-                                        </div>
-                                        <p class="text-[10px] text-gray-500">${svc.description}</p>
-                                        <p class="text-[10px] font-medium text-emerald-600 mt-1">Est. ${svc.etd} hari</p>
-                                    </div>
+                                                            <div class="flex-1">
+                                                                <div class="flex items-center gap-2 mb-1">
+                                                                    <span class="text-sm font-bold text-brand-dark">${svc.name}</span>
+                                                                    <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">${svc.service}</span>
+                                                                </div>
+                                                                <p class="text-[10px] text-gray-500">${svc.description}</p>
+                                                                <p class="text-[10px] font-medium text-emerald-600 mt-1">Est. ${svc.etd} hari</p>
+                                                            </div>
 
-                                    <div class="text-right ml-3">
-                                        <p class="text-lg font-black ${isCheapest ? 'text-emerald-600' : 'text-brand-primary'}">
-                                            ${formatRupiah(cost)}
-                                        </p>
-                                        ${isCheapest ? '<p class="text-[9px] text-emerald-600 font-bold mt-0.5">Paling murah!</p>' : ''}
-                                    </div>
-                                </div>
-                            </label>
-                        `;
+                                                            <div class="text-right ml-3">
+                                                                <p class="text-lg font-black ${isCheapest ? 'text-emerald-600' : 'text-brand-primary'}">
+                                                                    ${formatRupiah(cost)}
+                                                                </p>
+                                                                ${isCheapest ? '<p class="text-[9px] text-emerald-600 font-bold mt-0.5">Paling murah!</p>' : ''}
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                `;
                 });
 
                 $('#shipping-services').html(html);
@@ -695,12 +730,12 @@
 
             function resetShippingDisplay() {
                 $('#shipping-services').html(`
-                        <div class="text-center py-8">
-                            <i class="fa-solid fa-truck text-gray-300 text-3xl mb-3"></i>
-                            <p class="text-sm text-gray-500 mb-2">Pilih kurir untuk melihat ongkir secara instan</p>
-                            <p class="text-xs text-gray-400">Klik kurir di atas → ongkir muncul otomatis ✨</p>
-                        </div>
-                    `);
+                                                <div class="text-center py-8">
+                                                    <i class="fa-solid fa-truck text-gray-300 text-3xl mb-3"></i>
+                                                    <p class="text-sm text-gray-500 mb-2">Pilih kurir untuk melihat ongkir secara instan</p>
+                                                    <p class="text-xs text-gray-400">Klik kurir di atas → ongkir muncul otomatis ✨</p>
+                                                </div>
+                                            `);
                 currentShipping = 0;
                 $('#selected_shipping_cost').val('');
                 $('#selected_service_info').addClass('hidden');
@@ -776,46 +811,46 @@
 
             function buildAppliedCouponHTML(code, res) {
                 return `
-                        <div id="coupon-applied-box"
-                            class="flex items-center justify-between p-4 bg-purple-50 border-2 border-purple-300 rounded-2xl">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
-                                    <i class="fa-solid fa-tag"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-black text-purple-700">${code.toUpperCase()}</p>
-                                    <p class="text-xs text-purple-500">${res.coupon_name}</p>
-                                    <p class="text-xs font-bold text-green-600 mt-0.5">Hemat ${formatRupiah(res.discount_amount)}</p>
-                                </div>
-                            </div>
-                            <button type="button" id="btn-remove-coupon"
-                                class="text-xs font-bold text-red-400 hover:text-red-600 transition-colors px-3 py-1 rounded-lg hover:bg-red-50">
-                                <i class="fa-solid fa-xmark mr-1"></i> Hapus
-                            </button>
-                        </div>
-                    `;
+                                                <div id="coupon-applied-box"
+                                                    class="flex items-center justify-between p-4 bg-purple-50 border-2 border-purple-300 rounded-2xl">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
+                                                            <i class="fa-solid fa-tag"></i>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-sm font-black text-purple-700">${code.toUpperCase()}</p>
+                                                            <p class="text-xs text-purple-500">${res.coupon_name}</p>
+                                                            <p class="text-xs font-bold text-green-600 mt-0.5">Hemat ${formatRupiah(res.discount_amount)}</p>
+                                                        </div>
+                                                    </div>
+                                                    <button type="button" id="btn-remove-coupon"
+                                                        class="text-xs font-bold text-red-400 hover:text-red-600 transition-colors px-3 py-1 rounded-lg hover:bg-red-50">
+                                                        <i class="fa-solid fa-xmark mr-1"></i> Hapus
+                                                    </button>
+                                                </div>
+                                            `;
             }
 
             function buildCouponInputHTML() {
                 return `
-                        <div id="coupon-input-box" class="flex gap-3">
-                            <div class="relative flex-1">
-                                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300">
-                                    <i class="fa-solid fa-ticket text-sm"></i>
-                                </div>
-                                <input type="text" id="coupon_input" placeholder="Masukkan kode voucher"
-                                    autocomplete="off" autocapitalize="characters"
-                                    class="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-gray-200 text-sm font-bold
-                                           uppercase tracking-widest focus:outline-none focus:border-purple-400 transition-colors">
-                            </div>
-                            <button type="button" id="btn-apply-coupon"
-                                class="px-5 py-3.5 bg-purple-500 text-white font-black rounded-xl text-sm
-                                       hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap">
-                                Pakai
-                            </button>
-                        </div>
-                        <div id="coupon-message" class="mt-3 hidden"></div>
-                    `;
+                                                <div id="coupon-input-box" class="flex gap-3">
+                                                    <div class="relative flex-1">
+                                                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300">
+                                                            <i class="fa-solid fa-ticket text-sm"></i>
+                                                        </div>
+                                                        <input type="text" id="coupon_input" placeholder="Masukkan kode voucher"
+                                                            autocomplete="off" autocapitalize="characters"
+                                                            class="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-gray-200 text-sm font-bold
+                                                                   uppercase tracking-widest focus:outline-none focus:border-purple-400 transition-colors">
+                                                    </div>
+                                                    <button type="button" id="btn-apply-coupon"
+                                                        class="px-5 py-3.5 bg-purple-500 text-white font-black rounded-xl text-sm
+                                                               hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap">
+                                                        Pakai
+                                                    </button>
+                                                </div>
+                                                <div id="coupon-message" class="mt-3 hidden"></div>
+                                            `;
             }
 
             // ─── FORM SUBMIT ─────────────────────────────────────────────────────

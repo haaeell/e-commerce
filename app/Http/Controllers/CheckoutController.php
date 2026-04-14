@@ -180,19 +180,23 @@ class CheckoutController extends Controller
     {
         $request->validate(['search' => 'required|string|min:3']);
 
-        $response = Http::withHeaders([
-            'key' => config('services.rajaongkir.api_key'),
-        ])->get('https://rajaongkir.komerce.id/api/v1/destination/domestic-destination', [
-            'search' => $request->search,
-            'limit'  => 10,
-            'offset' => 0,
-        ]);
+        try {
+            $response = Http::withHeaders([
+                'key' => config('services.rajaongkir.api_key'),
+            ])->get('https://rajaongkir.komerce.id/api/v1/destination/domestic-destination', [
+                'search' => $request->search,
+                'limit'  => 10,
+                'offset' => 0,
+            ]);
 
-        if ($response->failed()) {
-            return response()->json([], 500);
+            if ($response->failed()) {
+                return response()->json([]);
+            }
+
+            return response()->json($response->json()['data'] ?? []);
+        } catch (\Throwable $e) {
+            return response()->json([]);
         }
-
-        return response()->json($response->json()['data'] ?? []);
     }
 
     protected function initMidtrans()

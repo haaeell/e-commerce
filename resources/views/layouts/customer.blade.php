@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -471,7 +472,81 @@
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     @stack('scripts')
+
+
+    <script>
+        let map, marker;
+        const defaultLat = -7.7956;
+        const defaultLng = 110.3695;
+
+        function initMap() {
+            if (map) return;
+
+            map = L.map('map').setView([defaultLat, defaultLng], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
+
+            marker.on('dragend', function () {
+                const pos = marker.getLatLng();
+                setCoords(pos.lat, pos.lng);
+            });
+
+            map.on('click', function (e) {
+                marker.setLatLng(e.latlng);
+                setCoords(e.latlng.lat, e.latlng.lng);
+            });
+        }
+
+        function setCoords(lat, lng) {
+            const latR = parseFloat(lat).toFixed(7);
+            const lngR = parseFloat(lng).toFixed(7);
+            $('#dest_latitude').val(latR);
+            $('#dest_longitude').val(lngR);
+            $('#lat_display').val(latR);
+            $('#lng_display').val(lngR);
+        }
+
+        const _origSwitchTab = window.switchAddressTab;
+        window.switchAddressTab = function (tab) {
+            _origSwitchTab(tab);
+            if (tab === 'new') {
+                setTimeout(function () {
+                    initMap();
+                    map.invalidateSize();
+                }, 100);
+            }
+        };
+
+        $(document).on('click', '#btn-my-location', function () {
+            if (!navigator.geolocation) return;
+
+            if (!map) {
+                initMap();
+            }
+
+            const $btn = $(this).prop('disabled', true).html('<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Mencari...');
+
+            navigator.geolocation.getCurrentPosition(function (pos) {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+
+                map.setView([lat, lng], 16);
+                marker.setLatLng([lat, lng]);
+                setCoords(lat, lng);
+
+                $btn.prop('disabled', false).html('<i class="fa-solid fa-location-crosshairs mr-1"></i> Lokasiku');
+            }, function () {
+                $btn.prop('disabled', false).html('<i class="fa-solid fa-location-crosshairs mr-1"></i> Lokasiku');
+                alert('Tidak bisa mendapatkan lokasi.');
+            });
+        });
+    </script>
 
     <script>
         $(document).ready(function () {

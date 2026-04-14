@@ -30,32 +30,32 @@
             </nav>
 
             <div class="flex flex-col lg:flex-row gap-12">
-                <div class="w-full lg:w-1/2 space-y-4">
+                <div class="w-full  lg:w-4/12 space-y-4">
                     <div
-                        class="relative aspect-[3/4] max-h-[550px] mx-auto rounded-[40px] overflow-hidden bg-gray-50 border border-gray-100 shadow-sm">
+                        class="relative w-full max-w-[340px] mx-auto rounded-[32px] overflow-hidden bg-gray-50 border border-gray-100 shadow-sm aspect-[3/4]">
                         <img id="mainImage"
                             src="{{ asset('storage/' . ($primaryImage ? $primaryImage->image_url : 'default.jpg')) }}"
                             class="w-full h-full object-cover transition-all duration-500 hover:scale-105">
 
                         @if($displayComparePrice > $displayPrice)
                             <div
-                                class="absolute top-6 left-6 px-4 py-2 bg-red-500 text-white text-xs font-black rounded-full shadow-lg">
+                                class="absolute top-4 left-4 px-3 py-1.5 bg-red-500 text-white text-xs font-black rounded-full shadow-lg">
                                 SALE
                             </div>
                         @endif
                     </div>
 
-                    <div class="flex justify-center gap-3 overflow-x-auto no-scrollbar pb-2">
+                    <div class="flex justify-center gap-2 overflow-x-auto no-scrollbar pb-2">
                         @foreach($product->images as $img)
                             <button onclick="changeImage('{{ asset('storage/' . $img->image_url) }}')"
-                                class="flex-none w-16 h-16 rounded-xl overflow-hidden border-2 {{ $img->is_primary ? 'border-brand-primary' : 'border-transparent' }} hover:border-brand-primary transition-all shadow-sm">
+                                class="flex-none w-12 h-12 rounded-lg overflow-hidden border-2 {{ $img->is_primary ? 'border-brand-primary' : 'border-transparent' }} hover:border-brand-primary transition-all shadow-sm">
                                 <img src="{{ asset('storage/' . $img->image_url) }}" class="w-full h-full object-cover">
                             </button>
                         @endforeach
                     </div>
                 </div>
 
-                <div class="w-full lg:w-1/2 space-y-8">
+                <div class="w-full lg:w-8/12  space-y-8">
                     <div>
                         <span
                             class="text-brand-primary font-bold text-xs uppercase tracking-[0.2em] mb-2 block">{{ $product->category->name }}</span>
@@ -328,6 +328,7 @@
                         if (response.status === 'success') {
                             Swal.fire({ icon: 'success', title: 'Berhasil!', text: response.message, showConfirmButton: false, timer: 1500 });
                             updateCartCount();
+                            window.location.reload();
                         }
                     },
                     error: function (xhr) {

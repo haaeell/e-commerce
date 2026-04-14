@@ -19,7 +19,9 @@ class OrderAddress extends Model
         'city',
         'district',
         'subdistrict',
-        'postal_code'
+        'postal_code',
+        'latitude',
+        'longitude',
     ];
 
     public function order()

@@ -20,6 +20,8 @@ class AddressController extends Controller
             'subdistrict' => 'required|string',
             'postal_code' => 'required|string|max:10',
             'address' => 'required|string',
+            'latitude'       => 'nullable|numeric',
+            'longitude'      => 'nullable|numeric',
         ]);
 
         $user = Auth::user();
@@ -44,6 +46,8 @@ class AddressController extends Controller
             'address' => $request->address,
             'is_default' => $isDefault,
             'rajaongkir_destination_id' => $request->rajaongkir_destination_id ?? null,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude
         ]);
 
         return back()->with('success', 'Alamat berhasil ditambahkan!');

@@ -24,6 +24,8 @@ class UserAddress extends Model
         'postal_code',
         'is_default',
         'rajaongkir_destination_id',
+        'latitude',
+        'longitude',
     ];
 
     public function user()

@@ -71,7 +71,7 @@
 
                 <div class="flex-grow">
                     @if($products->count() > 0)
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3">
                             @foreach($products as $product)
                                 @include('user.components.product-card', ['product' => $product, 'isFlashSale' => $product->compare_price > $product->price])
                             @endforeach
